@@ -53,7 +53,7 @@ steps {
                 script {
                     try{
                     sh 'mvn clean package -DscriptTests'
-                    sh 'docker build -t iheb141/timesheet-devops:1.0.0 .'
+                    sh 'docker build -t iheb141/ski-devops:1.0.0 .'
                     } catch(e){
                      echo "Docker build failed: ${e}"
                         currentBuild.result = 'FAILURE' 
@@ -70,7 +70,7 @@ steps {
                  withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
                     sh 'docker login -u iheb141 -p ${dockerhubpwd}'
                  }  
-                 sh 'docker push iheb141/timesheet-devops:1.0.0'
+                 sh 'docker push iheb141/ski-devops:1.0.0'
                 }
             }
         }
