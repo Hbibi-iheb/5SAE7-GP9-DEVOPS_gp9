@@ -1,8 +1,12 @@
 pipeline {
     agent any
 
+    environment {
+                SONAR_LOGIN = "admin"
+                SONAR_PASSWORD = "Azerty12345@"
+          }
     tools {
-        maven 'M2_HOME' // Ensure M2_HOME is correctly set in Jenkins
+        maven 'M2_HOME'
     }
 
     stages {
@@ -21,27 +25,13 @@ pipeline {
 
         stage('Test') {
                     steps {
-                            sh "mvn package"
+                            sh "mvn test"
                     }
                 }
 
         stage('SonarQube Scanner') {
-            steps {
-                withSonarQubeEnv('sonarqube') {
-                    script {
-                        // Perform SonarQube analysis
-                        sh "mvn sonar:sonar"
-                    }
-                }
-            }
-        }
-
-        stage('Nexus Deployment') {
-            steps {
-                script {
-                    // Deploy the artifact to Nexus
-                    sh 'mvn deploy'
-                }
+            steps{
+                sh "mvn sonar:sonar -Dsonar.login=${env.SONAR_LOGIN} -Dsonar.password=${env.SONAR_PASSWORD}"
             }
         }
     }
