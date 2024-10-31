@@ -15,7 +15,7 @@ pipeline {
        stage('build and test ')
         { steps{
             script{
-            sh " mvn clean install"
+            sh " mvn clean install -X -DscriptTests=true"
             sh " mvn test"}
         }
         }
