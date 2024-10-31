@@ -13,14 +13,17 @@ pipeline {
             }
         }
 
-        stage('Build and Test') {
+        stage('Build') {
             steps {
-                script {
-                    // Run Maven build and unit tests
-                    sh "mvn clean install -DscriptTests=true -Dmaven.test.skip=false"
-                }
+                    sh "mvn package"
             }
         }
+
+        stage('Test') {
+                    steps {
+                            sh "mvn package"
+                    }
+                }
 
         stage('SonarQube Scanner') {
             steps {
