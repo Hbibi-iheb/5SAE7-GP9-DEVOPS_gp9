@@ -48,7 +48,7 @@ pipeline {
             stage("Docker Hub") {
                     steps{
                           sh "docker tag abdelwahebdhib-5sae7-g9-ski-management:1.0 abdell333/abdelwahebdhib-5sae7-g9-ski-management:1.0"
-                          sh "sudo docker push abdell333/abdelwahebdhib-5sae7-g9-ski-management:1.0"
+                          sh "docker push abdell333/abdelwahebdhib-5sae7-g9-ski-management:1.0"
                     }
             }
 
