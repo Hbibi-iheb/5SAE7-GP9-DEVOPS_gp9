@@ -4,7 +4,7 @@ services:
   sonarqube:
     image: sonarqube:latest
     ports:
-      - "9000:9000"
+      - "9010:9000"
       - "9011:9092"
     networks:
       - devops-network
@@ -15,7 +15,7 @@ services:
   nexus:
     image: sonatype/nexus3:latest
     ports:
-      - "8081:8081"
+      - "8091:8081"
     networks:
       - devops-network
     volumes:
