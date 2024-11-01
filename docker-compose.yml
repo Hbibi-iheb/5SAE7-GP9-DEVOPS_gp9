@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  sonarqube:
+    image: sonarqube:latest
+    ports:
+      - "9000:9000"
+      - "9011:9092"
+    networks:
+      - devops-network
+    environment:
+      - SONARQUBE_JDBC_USERNAME=admin
+      - SONARQUBE_JDBC_PASSWORD=Azerty12345@
+
+  nexus:
+    image: sonatype/nexus3:latest
+    ports:
+      - "8081:8081"
+    networks:
+      - devops-network
+    volumes:
+      - nexus-data:/nexus-data
+
+  spring-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "1337:8089"
+    depends_on:
+      - mysql
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/devops
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+
+  mysql:
+    image: mysql
+    container_name: mysqlSpring
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: devops
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+    volumes:
+      - mysql-data:/var/lib/mysql
+    ports:
+      - "3310:3306"
+    networks:
+      - devops-network
+
+networks:
+  devops-network:
+    driver: bridge
+
+volumes:
+  mysql-data:
+  nexus-data:
