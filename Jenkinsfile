@@ -47,7 +47,7 @@ pipeline {
 
             stage("Docker Hub") {
                     steps{
-                          sh "docker push abdell333/abdelwahebdhib-5sae7-g9-ski-management:1.0"
+                          sh "docker push abdelwahebdhib-5sae7-g9-ski-management:1.0"
                     }
             }
 
