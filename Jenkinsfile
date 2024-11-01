@@ -41,13 +41,13 @@ pipeline {
          }
         stage("Docker Image") {
                   steps{
-                        sh "docker build -t AbdelwahedDhib-5SAE7-g9-devops:1.0 ."
+                        sh "docker build -t AbdelwahedDhib-5SAE7-g9-ski-management:1.0 ."
                   }
             }
 
             stage("Docker Hub") {
                     steps{
-                          sh "docker push abdell333/AbdelwahedDhib-5SAE7-g9-devops:1.0"
+                          sh "docker push abdell333/AbdelwahedDhib-5SAE7-g9-ski-management:1.0"
                     }
             }
 
