@@ -59,18 +59,4 @@ pipeline {
                   }
             }
     }
-    post{
-              success {            
-                  mail to :'abdelwaheb.dhib@esprit.tn',
-                  subject : 'Successful Build of Jenkins Pipeline',
-                  body : 'Great news! Springboot application was built successfully',
-                  from : 'dhibabdeleheb@gmail.com'
-              }
-              failure {
-                  mail to :'abdelwaheb.dhib@esprit.tn',
-                  subject : 'Jenkins Build Of The Backend Failed',
-                  body : 'Unfortunately, the Jenkins build of the spring boot backend has encountered an issue and failed.',
-                  from : 'dhibabdeleheb@gmail.com'
-              }
-        }
 }
