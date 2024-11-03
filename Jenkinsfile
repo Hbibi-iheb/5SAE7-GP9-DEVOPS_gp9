@@ -11,74 +11,66 @@ pipeline {
                     credentialsId: 'jenkins-example-github-pat'
             }
         }
-   
-       stage('build and test ')
-        { steps{
-            script{
-            sh " mvn clean install -X -DscriptTests=true"
-            sh " mvn test"}
-        }
-        }
-    stage('maven build') {
-steps {
-    script {
-        sh "mvn package -DscriptTests=true"
-    }
-}
-    }
-    stage('SonarQube Scanner') {
-            steps {
-                
-                    withSonarQubeEnv('sonarqube') {
-                 script{
-                 
-                    sh "mvn sonar:sonar"
-                 }
-
-
-                }
-                
-            }
-        }
-        stage('nexus'){
+    
+        stage('Build and Test') {
             steps {
                 script {
-                  sh ' mvn deploy  '
+                    sh "mvn clean install -X -DscriptTests=true"
+                    sh "mvn test"
                 }
             }
         }
-              
-          stage('Build Docker Image') {
+        stage('Maven Build') {
             steps {
                 script {
-                    try{
-                    sh 'mvn clean package -DscriptTests'
-                    sh 'docker build -t sahraoui44/ski-devops:1.0.0 .'
-                    } catch(e){
-                     echo "Docker build failed: ${e}"
+                    sh "mvn package -DscriptTests=true"
+                }
+            }
+        }
+        stage('SonarQube Scanner') {
+            steps {
+                withSonarQubeEnv('sonarqube') {
+                    script {
+                        sh "mvn sonar:sonar"
+                    }
+                }
+            }
+        }
+        stage('Nexus Deployment') {
+            steps {
+                script {
+                    sh 'mvn deploy'
+                }
+            }
+        }
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    try {
+                        sh 'mvn clean package -DscriptTests'
+                        sh 'docker build -t sahraoui44/ski-devops:1.0.0 .'
+                    } catch (e) {
+                        echo "Docker build failed: ${e}"
                         currentBuild.result = 'FAILURE' 
                         error("Docker image build failed")
                     }
                 }
-            
+            }
         }
-         }
-               stage('Deploy Docker Image') {
+        stage('Deploy Docker Image') {
             steps {
-             
                 script {
-                 withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
-                    sh 'docker login -u sahraoui44 -p ${dockerhubpwd}'
-                 }  
-                 sh 'docker push sahraoui44/ski-devops:1.0.0'
+                    withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
+                        sh 'docker login -u sahraoui44 -p "$dockerhubpwd"'
+                    }  
+                    sh 'docker push sahraoui44/ski-devops:1.0.0'
                 }
             }
         }
-         stage('Deploy with Docker Compose') {
+        stage('Deploy with Docker Compose') {
             steps {
                 sh 'docker-compose up -d'
             }
-        } 
-        
+        }
     }
 }
