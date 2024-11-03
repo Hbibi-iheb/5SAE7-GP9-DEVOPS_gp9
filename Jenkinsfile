@@ -33,8 +33,7 @@ pipeline {
             steps {
                 withSonarQubeEnv('sonarqube') { // Ensure 'sonarqube' matches your Jenkins configuration
                     script {
-                        // Set SonarQube token as an environment variable
-                        withEnv(["SONAR_TOKEN=sonarqube"]) { // Ensure you replace 'sonarqube' with the actual token if necessary
+                        withCredentials([string(credentialsId: 'your-sonarqube-token-id', variable: 'SONAR_TOKEN')]) { // Replace with your token ID
                             sh "mvn sonar:sonar -Dsonar.login=$SONAR_TOKEN"
                         }
                     }
