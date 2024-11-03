@@ -32,8 +32,8 @@ pipeline {
         stage('SonarQube Scanner') {
             steps {
                 withSonarQubeEnv('sonarqube') {
-                    withEnv(['SONAR_TOKEN=<your_new_token>']) { // Update this with your new token
-                        script {
+                    script {
+                        withCredentials([string(credentialsId: 'sonarqube-token', variable: 'SONAR_TOKEN')]) {
                             sh "mvn sonar:sonar -Dsonar.login=${SONAR_TOKEN} -X"
                         }
                     }
@@ -68,7 +68,7 @@ pipeline {
             steps {
                 script {
                     withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
-                        sh 'docker login -u sahraouiguesmi -p ${dockerhubpwd}'
+                        sh 'docker login -u sahraouiguessmi -p ${dockerhubpwd}'
                     }
                     sh 'docker push sahraoui44/ski-devops:1.0.0'
                 }
