@@ -1,9 +1,7 @@
 package tn.esprit.spring;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -15,14 +13,11 @@ import tn.esprit.spring.services.PisteServicesImpl;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-@SpringBootTest
+
 @ExtendWith(MockitoExtension.class)
 class GestionStationSkiApplicationTests {
 
-	@Test
-	void contextLoads() {
-	}
-	@Mock
+    @Mock
     private IPisteRepository pisteRepository;
 
     @InjectMocks
@@ -84,5 +79,4 @@ class GestionStationSkiApplicationTests {
         Assertions.assertNotNull(retrievedPiste);
         Mockito.verify(pisteRepository, Mockito.times(1)).findById(pisteId);
     }
-
 }
