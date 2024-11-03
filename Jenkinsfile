@@ -12,77 +12,73 @@ pipeline {
             }
         }
    
-        stage('Build and Test') {
+       stage('build and test ')
+        { steps{
+            script{
+            sh " mvn clean install -X -DscriptTests=true"
+            sh " mvn test"}
+        }
+        }
+    stage('maven build') {
+steps {
+    script {
+        sh "mvn package -DscriptTests=true"
+    }
+}
+    }
+    stage('SonarQube Scanner') {
+            steps {
+                
+                    withSonarQubeEnv('sonarqube') {
+                 script{
+                 
+                    sh "mvn sonar:sonar"
+                 }
+
+
+                }
+                
+            }
+        }
+        stage('nexus'){
             steps {
                 script {
-                    // Perform clean install with tests and log more detail
-                    sh "mvn clean install -X -DscriptTests=true"
+                  sh ' mvn deploy  '
                 }
             }
         }
-
-        stage('Maven Package') {
+              
+          stage('Build Docker Image') {
             steps {
                 script {
-                    // Package the application, skipping tests if already run
-                    sh "mvn package -DscriptTests=true"
-                }
-            }
-        }
-
-        stage('SonarQube Analysis') {
-            steps {
-                withSonarQubeEnv('sonarqube') {
-                    script {
-                        // Run SonarQube analysis
-                        sh "mvn sonar:sonar"
-                    }
-                }
-            }
-        }
-
-        stage('Nexus Deployment') {
-            steps {
-                script {
-                    // Deploy to Nexus repository
-                    sh "mvn deploy"
-                }
-            }
-        }
-
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    try {
-                        // Build Docker image
-                        sh "docker build -t sahraouiguessmi/ski-devops:1.0.0 ."
-                    } catch (Exception e) {
-                        echo "Docker build failed: ${e}"
+                    try{
+                    sh 'mvn clean package -DscriptTests'
+                    sh 'docker build -t sahraouiguessmi/ski-devops:1.0.0 .'
+                    } catch(e){
+                     echo "Docker build failed: ${e}"
                         currentBuild.result = 'FAILURE' 
                         error("Docker image build failed")
                     }
                 }
-            }
+            
         }
-
-        stage('Push Docker Image to Docker Hub') {
+         }
+               stage('Deploy Docker Image') {
             steps {
+             
                 script {
-                    withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
-                        // Login to Docker Hub
-                        sh "docker login -u sahraouiguesmi -p ${dockerhubpwd}"
-                    }
-                    // Push Docker image
-                    sh "docker push sahraouiguessmi/ski-devops:1.0.0"
+                 withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
+                    sh 'docker login -u sahraouiguesmi -p ${dockerhubpwd}'
+                 }  
+                 sh 'docker push sahraoui44/ski-devops:1.0.0'
                 }
             }
         }
-
-        stage('Deploy with Docker Compose') {
+         stage('Deploy with Docker Compose') {
             steps {
-                // Deploy services using Docker Compose
-                sh "docker-compose up -d"
+                sh 'docker-compose up -d'
             }
-        }
+        } 
+        
     }
 }
