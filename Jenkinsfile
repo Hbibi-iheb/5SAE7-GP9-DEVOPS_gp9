@@ -1,7 +1,7 @@
 pipeline {
     agent any
     tools {
-        maven 'M2_HOME' // Ensure this matches your Jenkins configuration
+        maven 'M2_HOME'
     }
     stages {
         stage('GIT') {
@@ -11,74 +11,74 @@ pipeline {
                     credentialsId: 'jenkins-example-github-pat'
             }
         }
+   
+       stage('build and test ')
+        { steps{
+            script{
+            sh " mvn clean install -X -DscriptTests=true"
+            sh " mvn test"}
+        }
+        }
+    stage('maven build') {
+steps {
+    script {
+        sh "mvn package -DscriptTests=true"
+    }
+}
+    }
+    stage('SonarQube Scanner') {
+            steps {
+                
+                    withSonarQubeEnv('sonarqube') {
+                 script{
+                 
+                    sh "mvn sonar:sonar"
+                 }
 
-        stage('Build and Test') {
+
+                }
+                
+            }
+        }
+        stage('nexus'){
             steps {
                 script {
-                    sh "mvn clean install -X -DscriptTests=true"
-                    sh "mvn test"
+                  sh ' mvn deploy  '
                 }
             }
         }
-
-        stage('Maven Build') {
+              
+          stage('Build Docker Image') {
             steps {
                 script {
-                    sh "mvn package -DscriptTests=true"
-                }
-            }
-        }
-
-        stage('SonarQube Scanner') {
-            steps {
-                withSonarQubeEnv('sonarqube') { // Ensure 'sonarqube' matches your Jenkins configuration
-                    script {
-                        withCredentials([string(credentialsId: 'your-sonarqube-token-id', variable: 'SONAR_TOKEN')]) { // Replace with your token ID
-                            sh "mvn sonar:sonar -Dsonar.login=$SONAR_TOKEN"
-                        }
-                    }
-                }
-            }
-        }
-
-        stage('Nexus') {
-            steps {
-                script {
-                    sh 'mvn deploy'
-                }
-            }
-        }
-
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    try {
-                        sh 'mvn clean package -DscriptTests'
-                        sh 'docker build -t sahraouiguessmi/ski-devops:1.0.0 .'
-                    } catch (e) {
-                        echo "Docker build failed: ${e}"
-                        currentBuild.result = 'FAILURE'
+                    try{
+                    sh 'mvn clean package -DscriptTests'
+                    sh 'docker build -t sahraouiguessmi/ski-devops:1.0.0 .'
+                    } catch(e){
+                     echo "Docker build failed: ${e}"
+                        currentBuild.result = 'FAILURE' 
                         error("Docker image build failed")
                     }
                 }
-            }
+            
         }
-
-        stage('Deploy Docker Image') {
+         }
+               stage('Deploy Docker Image') {
             steps {
+             
                 script {
-                    withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
-                        sh 'docker login -u sahraouiguesmi -p ${dockerhubpwd}'
-                    }
-                    sh 'docker push sahraouiguessmi/ski-devops:1.0.0'
+                 withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
+                    sh 'docker login -u sahraouiguesmi -p ${dockerhubpwd}'
+                 }  
+                 sh 'docker push sahraoui44/ski-devops:1.0.0'
                 }
             }
         }
-
-        stage('Deploy with Docker Compose') {
+         stage('Deploy with Docker Compose') {
             steps {
                 sh 'docker-compose up -d'
             }
-        }
+        } 
+        
     }
 }
