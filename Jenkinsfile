@@ -32,9 +32,9 @@ pipeline {
         stage('SonarQube Scanner') {
             steps {
                 withSonarQubeEnv('sonarqube') {
-                    withEnv(['SONAR_TOKEN=sonarqube']) { // Set the SonarQube token here
+                    withEnv(['SONAR_TOKEN=<your_new_token>']) { // Update this with your new token
                         script {
-                            sh "mvn sonar:sonar -Dsonar.login=${SONAR_TOKEN}"
+                            sh "mvn sonar:sonar -Dsonar.login=${SONAR_TOKEN} -X"
                         }
                     }
                 }
