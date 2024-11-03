@@ -1,7 +1,7 @@
 pipeline {
     agent any
     tools {
-        maven 'M2_HOME'
+        maven 'M2_HOME' // Ensure this matches your Jenkins configuration
     }
     stages {
         stage('GIT') {
@@ -11,7 +11,7 @@ pipeline {
                     credentialsId: 'jenkins-example-github-pat'
             }
         }
-   
+
         stage('Build and Test') {
             steps {
                 script {
@@ -31,10 +31,11 @@ pipeline {
 
         stage('SonarQube Scanner') {
             steps {
-                withSonarQubeEnv('sonarqube') {
+                withSonarQubeEnv('sonarqube') { // Ensure 'sonarqube' matches your Jenkins configuration
                     script {
-                        withCredentials([string(credentialsId: 'sonarqube-token', variable: 'SONAR_TOKEN')]) {
-                            sh "mvn sonar:sonar -Dsonar.login=${SONAR_TOKEN} -X"
+                        // Set SonarQube token as an environment variable
+                        withEnv(["SONAR_TOKEN=sonarqube"]) { // Ensure you replace 'sonarqube' with the actual token if necessary
+                            sh "mvn sonar:sonar -Dsonar.login=$SONAR_TOKEN"
                         }
                     }
                 }
@@ -57,7 +58,7 @@ pipeline {
                         sh 'docker build -t sahraouiguessmi/ski-devops:1.0.0 .'
                     } catch (e) {
                         echo "Docker build failed: ${e}"
-                        currentBuild.result = 'FAILURE' 
+                        currentBuild.result = 'FAILURE'
                         error("Docker image build failed")
                     }
                 }
@@ -68,9 +69,9 @@ pipeline {
             steps {
                 script {
                     withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
-                        sh 'docker login -u sahraouiguessmi -p ${dockerhubpwd}'
+                        sh 'docker login -u sahraouiguesmi -p ${dockerhubpwd}'
                     }
-                    sh 'docker push sahraoui44/ski-devops:1.0.0'
+                    sh 'docker push sahraouiguessmi/ski-devops:1.0.0'
                 }
             }
         }
@@ -79,6 +80,6 @@ pipeline {
             steps {
                 sh 'docker-compose up -d'
             }
-        } 
+        }
     }
 }
