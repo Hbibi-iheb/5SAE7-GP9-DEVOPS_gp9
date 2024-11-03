@@ -53,7 +53,7 @@ steps {
                 script {
                     try{
                     sh 'mvn clean package -DscriptTests'
-                    sh 'docker build -t sahraoui44/ski-devops:1.0.0 .'
+                    sh 'docker build -t sahraouiguessmi/ski-devops:1.0.0 .'
                     } catch(e){
                      echo "Docker build failed: ${e}"
                         currentBuild.result = 'FAILURE' 
@@ -68,7 +68,7 @@ steps {
              
                 script {
                  withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
-                    sh 'docker login -u sahraoui44 -p ${dockerhubpwd}'
+                    sh 'docker login -u sahraouiguesmi -p ${dockerhubpwd}'
                  }  
                  sh 'docker push sahraoui44/ski-devops:1.0.0'
                 }
