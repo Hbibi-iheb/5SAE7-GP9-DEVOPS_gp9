@@ -12,7 +12,7 @@ pipeline {
             }
         }
    
-        stage('build and test') {
+        stage('Build and Test') {
             steps {
                 script {
                     sh "mvn clean install -X -DscriptTests=true"
@@ -20,8 +20,8 @@ pipeline {
                 }
             }
         }
-        
-        stage('maven build') {
+
+        stage('Maven Build') {
             steps {
                 script {
                     sh "mvn package -DscriptTests=true"
@@ -32,7 +32,7 @@ pipeline {
         stage('SonarQube Scanner') {
             steps {
                 withSonarQubeEnv('sonarqube') {
-                    withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
+                    withEnv(['SONAR_TOKEN=sonarqube']) { // Set the SonarQube token here
                         script {
                             sh "mvn sonar:sonar -Dsonar.login=${SONAR_TOKEN}"
                         }
@@ -41,14 +41,14 @@ pipeline {
             }
         }
 
-        stage('nexus') {
+        stage('Nexus') {
             steps {
                 script {
                     sh 'mvn deploy'
                 }
             }
         }
-        
+
         stage('Build Docker Image') {
             steps {
                 script {
@@ -69,7 +69,7 @@ pipeline {
                 script {
                     withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
                         sh 'docker login -u sahraouiguesmi -p ${dockerhubpwd}'
-                    }  
+                    }
                     sh 'docker push sahraoui44/ski-devops:1.0.0'
                 }
             }
