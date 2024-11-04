@@ -72,6 +72,14 @@ pipeline {
                 }
             }
         }
+          stage('Deploy with Docker Compose') {
+            steps {
+                sh 'docker-compose up -d'
+            }
+        } 
+        
+    }
+}
         
         stage('Dockerhub') {
             steps {
@@ -83,21 +91,7 @@ pipeline {
 
        
 
-      stage('Deploy with Docker Compose') {
-    steps {
-        script {
-            // Stop and remove existing conflicting containers
-            sh '''
-            if [ "$(docker ps -aq -f name=docker-compose-mysql-db)" ]; then
-                docker rm -f docker-compose-mysql-db
-            fi
-            
-            docker-compose down
-            docker-compose up -d
-            '''
-        }
-    }
-}
+    
 
         
 
