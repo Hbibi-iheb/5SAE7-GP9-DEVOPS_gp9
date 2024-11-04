@@ -57,11 +57,14 @@ pipeline {
     steps {
         script {
             withCredentials([usernamePassword(credentialsId: 'nexus-credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
-                sh "mvn clean deploy -DskipTests -Dusername=${NEXUS_USER} -Dpassword=${NEXUS_PASS}"
+                // Make sure to check if variables are being set correctly
+                echo "Using Nexus User: ${NEXUS_USER}"
+                sh "mvn clean deploy -DskipTests --settings /path/to/settings.xml -Dusername=${NEXUS_USER} -Dpassword=${NEXUS_PASS}"
             }
         }
     }
 }
+
 
 
 
