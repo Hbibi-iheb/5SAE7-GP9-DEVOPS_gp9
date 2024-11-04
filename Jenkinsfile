@@ -84,13 +84,22 @@ pipeline {
      stage('Deploy with Docker Compose') {
     steps {
         script {
+            // Remove conflicting containers if they already exist
             sh '''
-            docker-compose down
+            if [ "$(docker ps -aq -f name=docker-compose-mysql-db)" ]; then
+                docker rm -f docker-compose-mysql-db || true
+            fi
+            if [ "$(docker ps -aq -f name=docker-compose-spring-boot)" ]; then
+                docker rm -f docker-compose-spring-boot || true
+            fi
+
+            # Start the containers
             docker-compose up -d
             '''
         }
     }
 }
+
 
         
 stage('Monitoring Services G/P') {
