@@ -72,19 +72,17 @@ pipeline {
             }
         }
 
-       stage('Deploy Docker Image') {
-    steps {
-        // Using withCredentials to get Docker Hub password
-        withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
-            // Login to Docker Hub using the retrieved password
-            sh """
-                echo '${dockerhubpwd}' | docker login -u sahraouiguesmi --password-stdin
-            """
-            // Push the Docker image to the repository
-            sh 'docker push sahraouiguessmi/ski-devops:1.0.0'
+        stage('Deploy Docker Image') {
+            steps {
+             
+                script {
+                 withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
+                    sh 'docker login -u iheb141 -p ${dockerhubpwd}'
+                 }  
+                 sh 'docker push iheb141/ski-devops:1.0.0'
+                }
+            }
         }
-    }
-}
 
 
 
