@@ -71,6 +71,14 @@ pipeline {
                 }
             }
         }
+        
+        stage('Dockerhub') {
+            steps {
+                echo 'Push Image to dockerhub : ';
+                sh 'docker login -u malekhmem -p Malek2001';
+                sh 'docker push malekhmem/tpski-app:1.0.0';
+            }
+        }
 
         stage('Deploy Docker Image') {
             steps {
