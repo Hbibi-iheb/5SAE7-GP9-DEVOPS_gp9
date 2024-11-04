@@ -55,7 +55,16 @@ pipeline {
 }
 
 
+stage('Monitoring Services G/P') {
+            steps {
+                script {
+                    sh 'docker start prometheus'
+                    sh 'docker start grafana'
 
+                }
+            }
+        }
+    }
 
         stage('Build Docker Image') {
             steps {
