@@ -84,21 +84,30 @@ pipeline {
      stage('Deploy with Docker Compose') {
     steps {
         script {
-            // Remove conflicting containers if they already exist
             sh '''
+            # Check and remove conflicting containers if they exist
             if [ "$(docker ps -aq -f name=docker-compose-mysql-db)" ]; then
+                echo "Removing existing mysql-db container..."
                 docker rm -f docker-compose-mysql-db || true
             fi
+
             if [ "$(docker ps -aq -f name=docker-compose-spring-boot)" ]; then
+                echo "Removing existing spring-boot container..."
                 docker rm -f docker-compose-spring-boot || true
             fi
 
-            # Start the containers
+            # Check and create the necessary network if it doesn't exist
+            if ! docker network ls | grep -q "pipelineproject2_default"; then
+                docker network create pipelineproject2_default
+            fi
+
+            # Start the Docker Compose services
             docker-compose up -d
             '''
         }
     }
 }
+
 
 
         
