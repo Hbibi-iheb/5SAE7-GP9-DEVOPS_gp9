@@ -40,7 +40,7 @@ steps {
                 
             }
         }
-       stage('Nexus') {
+       stage('nexus') {
             steps {
                 withCredentials([usernamePassword(credentialsId: NEXUS_CREDENTIALS_ID, usernameVariable: 'NEXUS_USERNAME', passwordVariable: 'NEXUS_PASSWORD')]) {
                     sh """
