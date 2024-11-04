@@ -40,13 +40,14 @@ steps {
                 
             }
         }
-        stage('nexus'){
-            steps {
-                script {
-                  sh ' mvn deploy  '
-                }
-            }
+        stage('nexus') {
+    steps {
+        withCredentials([usernamePassword(credentialsId: 'nexus-credentials-id', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASSWORD')]) {
+            sh 'mvn deploy -DaltDeploymentRepository=deploymentRepo::default::http://192.168.33.10:8081/repository/sahraoui_repository/ -Dusername=$NEXUS_USER -Dpassword=$NEXUS_PASSWORD'
         }
+    }
+}
+
               
           stage('Build Docker Image') {
             steps {
