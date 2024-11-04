@@ -40,10 +40,17 @@ steps {
                 
             }
         }
-        stage('nexus') {
-    steps {
-        withMaven(mavenSettingsConfig: 'jenkins-maven-settings') {
-            sh 'mvn deploy'
+       stage('Nexus') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: NEXUS_CREDENTIALS_ID, usernameVariable: 'NEXUS_USERNAME', passwordVariable: 'NEXUS_PASSWORD')]) {
+                    sh """
+                        mvn deploy:deploy-file -Durl=${NEXUS_URL} -DrepositoryId=deploymentRepo \
+                        -DgroupId=tn.esprit.spring -DartifactId=gestion-station-ski -Dversion=1.0-SNAPSHOT \
+                        -Dpackaging=jar -Dfile=target/gestion-station-ski-1.0-SNAPSHOT.jar \
+                        -DgeneratePom=true -Dusername=${NEXUS_USERNAME} -Dpassword=${NEXUS_PASSWORD}
+                    """
+                }
+            }
         }
     }
 }
