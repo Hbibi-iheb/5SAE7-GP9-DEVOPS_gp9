@@ -76,17 +76,16 @@ pipeline {
     steps {
         // Using withCredentials to get Docker Hub password
         withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
-            // Set Docker username and password as environment variables
-            withEnv(["DOCKER_USERNAME=sahraouiguesmi", "DOCKER_PASSWORD=${dockerhubpwd}"]) {
-                // Login to Docker Hub using environment variables
-                sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
-                
-                // Push the Docker image to the repository
-                sh 'docker push sahraouiguessmi/ski-devops:1.0.0'
-            }
+            // Login to Docker Hub using the retrieved password
+            sh """
+                echo '${dockerhubpwd}' | docker login -u sahraouiguesmi --password-stdin
+            """
+            // Push the Docker image to the repository
+            sh 'docker push sahraouiguessmi/ski-devops:1.0.0'
         }
     }
 }
+
 
 
 
