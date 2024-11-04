@@ -62,7 +62,7 @@ pipeline {
                 script {
                     try {
                         sh 'mvn clean package -DscriptTests=true'
-                        sh 'docker build -t sahraouiguessmi/ski-devops:1.0.0 .'
+                        sh 'docker build -t sahraouiguesmi/ski-devops:1.0.0 .'
                     } catch (e) {
                         echo "Docker build failed: ${e}"
                         currentBuild.result = 'FAILURE'
@@ -76,7 +76,7 @@ pipeline {
             steps {
                 echo 'Push Image to dockerhub : ';
                 sh 'docker login -u sahraouiguesmi -p dockerhub';
-                sh 'docker push sahraouiguessmi/ski-devops:1.0.0';
+                sh 'docker push sahraouiguesmi/ski-devops:1.0.0';
             }
         }
 
@@ -87,7 +87,7 @@ pipeline {
                  withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
                     sh 'docker login -u sahraouiguesmi -p ${dockerhubpwd}'
                  }  
-                 sh 'docker push sahraouiguessmi/ski-devops:1.0.0'
+                 sh 'docker push sahraouiguesmi/ski-devops:1.0.0'
                 }
             }
         }
