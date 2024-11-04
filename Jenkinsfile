@@ -44,16 +44,16 @@ pipeline {
         }
 
        stage('Nexus Deployment') {
-            steps {
-                script {
-                    sh """
-                        mvn deploy -DskipTests -DaltDeploymentRepository=sahraoui_repository::default::http://admin:nexus@192.168.33.10:8081/repository/sahraoui_repository/
-                    """
-                }
-            }
+    steps {
+        script {
+            // Using double quotes for the shell command
+            sh """
+                mvn deploy -DskipTests -DaltDeploymentRepository=sahraoui_repository::default::http://admin:nexus@192.168.33.10:8081/repository/sahraoui_repository/
+            """
         }
     }
 }
+
 
 
 
