@@ -72,15 +72,7 @@ pipeline {
                 }
             }
         }
-          stage('Deploy with Docker Compose') {
-            steps {
-                sh 'docker-compose up -d'
-            }
-        } 
-        
-    }
-}
-        
+         
         stage('Dockerhub') {
             steps {
                 echo 'Push Image to dockerhub : ';
@@ -89,13 +81,15 @@ pipeline {
             }
         }
 
-       
-
-    
-
+     stage('Deploy with Docker Compose') {
+            steps {
+                sh 'docker-compose up -d'
+            }
+        } 
         
-
-
+    }
+}
+        
 stage('Monitoring Services G/P') {
     steps {
         script {
