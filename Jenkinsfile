@@ -43,13 +43,20 @@ pipeline {
             }
         }
 
-        stage('Nexus Deployment'){
-            steps {
-                script {
-                  sh ' mvn deploy  '
-                }
-            }
+        stage('Nexus Deployment') {
+    steps {
+        script {
+            // Set your Nexus credentials directly in the Maven command
+            sh """
+                mvn deploy -DskipTests \
+                -DaltDeploymentRepository=sahraoui_repository::default::http://192.168.33.10:8081/repository/sahraoui_repository/ \
+                -Dusername=admin \
+                -Dpassword=nexus
+            """
         }
+    }
+}
+
 
         stage('Build Docker Image') {
             steps {
