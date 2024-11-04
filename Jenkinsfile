@@ -32,7 +32,7 @@ steps {
                     withSonarQubeEnv('sonarqube') {
                  script{
                  
-                    sh "mvn sonar:sonar"
+                    sh "mvn sonar:sonar -Dsonar.login=sqa_535f0f66aa5a63f4e06f2e361c98bf6fc42f1b3c"
                  }
 
 
