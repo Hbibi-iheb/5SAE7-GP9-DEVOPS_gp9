@@ -4,7 +4,6 @@ pipeline {
         maven 'M2_HOME' // Ensure this matches your Jenkins configuration
     }
     environment {
-        PATH = "/usr/local/bin:$PATH"
         NEXUS_URL = 'http://192.168.33.10:8081/repository/sahraoui_repository/' // Nexus repository URL
         NEXUS_CREDENTIALS_ID = 'nexus-credentials' // Update with your actual Jenkins credentials ID for Nexus
     }
