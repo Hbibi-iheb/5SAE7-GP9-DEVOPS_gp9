@@ -56,15 +56,31 @@ pipeline {
 
 
 stage('Monitoring Services G/P') {
-            steps {
-                script {
-                    sh 'docker start prometheus'
-                    sh 'docker start grafana'
+    steps {
+        script {
+            // Start Prometheus if it's not already running
+            sh '''
+            if [ "$(docker ps -q -f name=prometheus)" ]; then
+                echo "Prometheus is already running."
+            else
+                docker start prometheus
+                echo "Started Prometheus."
+            fi
+            '''
 
-                }
-            }
+            // Start Grafana if it's not already running
+            sh '''
+            if [ "$(docker ps -q -f name=grafana)" ]; then
+                echo "Grafana is already running."
+            else
+                docker start grafana
+                echo "Started Grafana."
+            fi
+            '''
         }
     }
+}
+
 
         stage('Build Docker Image') {
             steps {
