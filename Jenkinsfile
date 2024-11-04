@@ -84,12 +84,17 @@ pipeline {
        
 
         stage('Deploy with Docker Compose') {
-            steps {
-                sh 'docker-compose up -d'
-            }
+    steps {
+        script {
+            // Stop and remove any existing containers to avoid conflicts
+            sh '''
+            docker-compose down
+            docker-compose up -d
+            '''
         }
     }
 }
+
 
 stage('Monitoring Services G/P') {
     steps {
