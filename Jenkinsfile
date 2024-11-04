@@ -55,6 +55,38 @@ pipeline {
 }
 
 
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    try {
+                        sh 'mvn clean package -DscriptTests=true'
+                        sh 'docker build -t sahraouiguesmi/ski-devops:1.0.0 .'
+                    } catch (e) {
+                        echo "Docker build failed: ${e}"
+                        currentBuild.result = 'FAILURE'
+                        error("Docker image build failed")
+                    }
+                }
+            }
+        }
+         
+        stage('Dockerhub') {
+            steps {
+                echo 'Push Image to dockerhub : ';
+                sh 'docker login -u sahraouiguesmi -p dockerhub';
+                sh 'docker push sahraouiguesmi/ski-devops:1.0.0';
+            }
+        }
+
+     stage('Deploy with Docker Compose') {
+            steps {
+                sh 'docker-compose up -d'
+            }
+        } 
+        
+    }
+}
+
 stage('Monitoring Services G/P') {
     steps {
         script {
@@ -88,40 +120,6 @@ stage('Monitoring Services G/P') {
             fi
             '''
         }
-    }
-}
-
-
-
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    try {
-                        sh 'mvn clean package -DscriptTests=true'
-                        sh 'docker build -t sahraouiguesmi/ski-devops:1.0.0 .'
-                    } catch (e) {
-                        echo "Docker build failed: ${e}"
-                        currentBuild.result = 'FAILURE'
-                        error("Docker image build failed")
-                    }
-                }
-            }
-        }
-         
-        stage('Dockerhub') {
-            steps {
-                echo 'Push Image to dockerhub : ';
-                sh 'docker login -u sahraouiguesmi -p dockerhub';
-                sh 'docker push sahraouiguesmi/ski-devops:1.0.0';
-            }
-        }
-
-     stage('Deploy with Docker Compose') {
-            steps {
-                sh 'docker-compose up -d'
-            }
-        } 
-        
     }
 }
         
