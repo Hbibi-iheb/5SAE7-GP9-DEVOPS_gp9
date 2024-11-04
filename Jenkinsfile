@@ -45,20 +45,12 @@ pipeline {
 
         stage('Nexus Deployment') {
     steps {
-        // Fetch the Nexus credentials from Jenkins
-        withCredentials([usernamePassword(credentialsId: NEXUS_CREDENTIALS_ID, usernameVariable: 'NEXUS_USERNAME', passwordVariable: 'NEXUS_PASSWORD')]) {
-            // Set the Nexus URL environment variable
-            withEnv(["NEXUS_URL=${NEXUS_URL}"]) {
-                sh """
-                    mvn deploy:deploy-file -Durl=\${NEXUS_URL} -DrepositoryId=deploymentRepo \
-                    -DgroupId=tn.esprit.spring -DartifactId=gestion-station-ski -Dversion=1.0-SNAPSHOT \
-                    -Dpackaging=jar -Dfile=target/gestion-station-ski-1.0-SNAPSHOT.jar \
-                    -DgeneratePom=true -Dusername=\${NEXUS_USERNAME} -Dpassword=\${NEXUS_PASSWORD}
-                """
-            }
+        script {
+            sh 'mvn clean deploy -DskipTests'
         }
     }
 }
+
 
 
         stage('Build Docker Image') {
