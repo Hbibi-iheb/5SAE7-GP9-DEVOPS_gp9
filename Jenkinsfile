@@ -4,10 +4,20 @@ pipeline {
         maven 'M2_HOME'
     }
     environment {
-        NEXUS_URL = 'http://192.168.33.10:8081/repository/sahraoui_repository/' // Replace with your Nexus URL if different
-        NEXUS_CREDENTIALS_ID = 'nexus-credentials' // Update with your actual Jenkins credentials ID for Nexus
+        NEXUS_URL = 'http://192.168.33.10:8081/repository/sahraoui_repository/'
+        NEXUS_CREDENTIALS_ID = 'nexus-credentials'
     }
     stages {
+        stage('Debug Environment') {
+            steps {
+                script {
+                    echo "M2_HOME is set to: ${env.M2_HOME}"
+                    echo "NEXUS_URL is set to: ${env.NEXUS_URL}"
+                }
+            }
+        }
+        
+        // Uncomment other stages one by one to identify issues
         stage('GIT') {
             steps {
                 git branch: 'Mohamed_Sahraoui_Guesmi_5sae7',
