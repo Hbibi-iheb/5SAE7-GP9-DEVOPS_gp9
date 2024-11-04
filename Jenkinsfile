@@ -77,9 +77,9 @@ pipeline {
              
                 script {
                  withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
-                    sh 'docker login -u iheb141 -p ${dockerhubpwd}'
+                    sh 'docker login -u sahraouiguesmi -p ${dockerhubpwd}'
                  }  
-                 sh 'docker push iheb141/ski-devops:1.0.0'
+                 sh 'docker push sahraouiguesmi/ski-devops:1.0.0'
                 }
             }
         }
