@@ -93,23 +93,33 @@ pipeline {
 stage('Monitoring Services G/P') {
     steps {
         script {
-          
+            // Check and start Prometheus container if not already running
             sh '''
             if [ "$(docker ps -q -f name=prometheus)" ]; then
                 echo "Prometheus is already running."
             else
-                docker start prometheus
-                echo "Started Prometheus."
+                if [ "$(docker ps -a -q -f name=prometheus)" ]; then
+                    docker start prometheus
+                    echo "Started existing Prometheus container."
+                else
+                    docker run -d --name prometheus prom/prometheus
+                    echo "Started a new Prometheus container."
+                fi
             fi
             '''
 
-
+            // Check and start Grafana container if not already running
             sh '''
             if [ "$(docker ps -q -f name=grafana)" ]; then
                 echo "Grafana is already running."
             else
-                docker start grafana
-                echo "Started Grafana."
+                if [ "$(docker ps -a -q -f name=grafana)" ]; then
+                    docker start grafana
+                    echo "Started existing Grafana container."
+                else
+                    docker run -d --name grafana grafana/grafana
+                    echo "Started a new Grafana container."
+                fi
             fi
             '''
         }
