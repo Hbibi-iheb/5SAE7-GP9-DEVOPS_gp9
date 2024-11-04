@@ -43,14 +43,16 @@ pipeline {
             }
         }
 
-        stage('Nexus Deployment') {
+       stage('Nexus Deployment') {
     steps {
         script {
             withCredentials([usernamePassword(credentialsId: 'nexus-credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
-    sh "mvn clean deploy -DskipTests -Dusername=${NEXUS_USER} -Dpassword=${NEXUS_PASS}"
+                sh "mvn clean deploy -DskipTests -Dusername=${NEXUS_USER} -Dpassword=${NEXUS_PASS}"
             }
         }
     }
+}
+
 
 
 
