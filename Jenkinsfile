@@ -76,7 +76,7 @@ pipeline {
             steps {
                 echo 'Push Image to dockerhub : ';
                 sh 'docker login -u sahraouiguesmi -p dockerhub';
-                sh 'docker push sahraouiguessmi/alpine';
+                sh 'docker push sahraouiguessmi/ski-devops:1.0.0';
             }
         }
 
@@ -87,7 +87,7 @@ pipeline {
                  withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
                     sh 'docker login -u sahraouiguesmi -p ${dockerhubpwd}'
                  }  
-                 sh 'docker push sahraouiguesmi/alpine'
+                 sh 'docker push sahraouiguessmi/ski-devops:1.0.0'
                 }
             }
         }
