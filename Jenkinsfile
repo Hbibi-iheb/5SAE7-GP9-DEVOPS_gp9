@@ -42,8 +42,8 @@ steps {
         }
         stage('nexus') {
     steps {
-        withCredentials([usernamePassword(credentialsId: 'nexus-credentials-id', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASSWORD')]) {
-            sh 'mvn deploy -DaltDeploymentRepository=deploymentRepo::default::http://192.168.33.10:8081/repository/sahraoui_repository/ -Dusername=$NEXUS_USER -Dpassword=$NEXUS_PASSWORD'
+        withMaven(mavenSettingsConfig: 'jenkins-maven-settings') {
+            sh 'mvn deploy'
         }
     }
 }
