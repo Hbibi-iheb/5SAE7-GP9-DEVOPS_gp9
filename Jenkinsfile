@@ -75,8 +75,8 @@ pipeline {
         stage('Dockerhub') {
             steps {
                 echo 'Push Image to dockerhub : ';
-                sh 'docker login -u malekhmem -p Malek2001';
-                sh 'docker push malekhmem/tpski-app:1.0.0';
+                sh 'docker login -u sahraouiguesmi -p dockerhub';
+                sh 'docker push sahraouiguesmi/tpski-app:1.0.0';
             }
         }
 
