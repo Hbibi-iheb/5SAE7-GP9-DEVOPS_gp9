@@ -1,23 +1,13 @@
 pipeline {
     agent any
     tools {
-        maven 'M2_HOME'
+        maven 'M2_HOME' // Ensure this matches your Jenkins configuration
     }
     environment {
-        NEXUS_URL = 'http://192.168.33.10:8081/repository/sahraoui_repository/'
-        NEXUS_CREDENTIALS_ID = 'nexus-credentials'
+        NEXUS_URL = 'http://192.168.33.10:8081/repository/sahraoui_repository/' // Nexus repository URL
+        NEXUS_CREDENTIALS_ID = 'nexus-credentials' // Update with your actual Jenkins credentials ID for Nexus
     }
     stages {
-        stage('Debug Environment') {
-            steps {
-                script {
-                    echo "M2_HOME is set to: ${env.M2_HOME}"
-                    echo "NEXUS_URL is set to: ${env.NEXUS_URL}"
-                }
-            }
-        }
-        
-        // Uncomment other stages one by one to identify issues
         stage('GIT') {
             steps {
                 git branch: 'Mohamed_Sahraoui_Guesmi_5sae7',
@@ -53,21 +43,16 @@ pipeline {
             }
         }
 
-       stage('Nexus Deployment') {
-    steps {
-        script {
-            withCredentials([usernamePassword(credentialsId: 'nexus-credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
-                // Make sure to check if variables are being set correctly
-                echo "Using Nexus User: ${NEXUS_USER}"
-                sh "mvn clean deploy -DskipTests --settings /path/to/settings.xml -Dusername=${NEXUS_USER} -Dpassword=${NEXUS_PASS}"
+        stage('Nexus Deployment') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: NEXUS_CREDENTIALS_ID, usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
+                        echo "Deploying to Nexus with user: ${NEXUS_USER}"
+                        sh "mvn clean deploy -DskipTests -Dusername=${NEXUS_USER} -Dpassword=${NEXUS_PASS}"
+                    }
+                }
             }
         }
-    }
-}
-
-
-
-
 
         stage('Build Docker Image') {
             steps {
