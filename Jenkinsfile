@@ -74,17 +74,20 @@ pipeline {
 
        stage('Deploy Docker Image') {
     steps {
-        // Fetching the environment variables suitable for withEnv
-        withEnv(["DOCKER_USERNAME=sahraouiguesmi", "DOCKER_PASSWORD=${dockerhubpwd}"]) {
-            withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
-                // Login to Docker Hub using the environment variables
+        // Using withCredentials to get Docker Hub password
+        withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
+            // Set Docker username and password as environment variables
+            withEnv(["DOCKER_USERNAME=sahraouiguesmi", "DOCKER_PASSWORD=${dockerhubpwd}"]) {
+                // Login to Docker Hub using environment variables
                 sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
+                
+                // Push the Docker image to the repository
+                sh 'docker push sahraouiguessmi/ski-devops:1.0.0'
             }
-            // Push the Docker image to the repository
-            sh 'docker push sahraouiguessmi/ski-devops:1.0.0'
         }
     }
 }
+
 
 
         stage('Deploy with Docker Compose') {
