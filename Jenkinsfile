@@ -16,24 +16,16 @@ pipeline {
             }
         }
 
-        stage('Build and Test with Mockito') {
-            steps {
-                script {
-                    // Clean and install dependencies while skipping tests
-                    sh "mvn clean install -DskipTests"
-                    
-                    // Run the tests, including Mockito tests
-                    sh "mvn test"
-                }
-            }
+       stage('JUnit/Mockito') {
+    steps {
+        script {
+            sh "mvn clean install -DskipTests"
+            sh "mvn test"
+            junit '**/target/surefire-reports/*.xml'
         }
+    }
+}
 
-        stage('Publish Test Results') {
-            steps {
-                // Publish JUnit test results
-                junit '**/target/surefire-reports/*.xml'
-            }
-        }
 
         stage('Maven Build') {
             steps {
