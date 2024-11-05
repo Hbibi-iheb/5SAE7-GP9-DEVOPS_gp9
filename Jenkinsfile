@@ -11,6 +11,7 @@ pipeline {
                     credentialsId: 'jenkins-example-github-pat'
             }
         }
+        
    
        stage('build and test ')
         { steps{
@@ -19,6 +20,7 @@ pipeline {
             sh " mvn test"}
         }
         }
+        
     stage('maven build') {
 steps {
     script {
@@ -26,6 +28,16 @@ steps {
     }
 }
     } 
+                stage('JUnit/Mockito') {
+            steps {
+                script {
+                    sh "mvn clean install -DskipTests"
+                    sh "mvn test"
+                    junit '**/target/surefire-reports/*.xml'
+                }
+            }
+        }
+
        
     stage('SonarQube Scanner') {
             steps {
