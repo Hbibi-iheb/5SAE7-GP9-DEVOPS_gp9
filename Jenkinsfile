@@ -10,7 +10,7 @@ pipeline {
     stages {
         stage('GIT') {
             steps {
-                git branch: 'Mohamed_Sahraoui_Guesmi_5sae7',
+                git branch: 'Mohamed_Sahraoui_Guesmi_5sae7_GP9',
                     url: 'https://github.com/Hbibi-iheb/5SAE7-GP9-DEVOPS_gp9.git',
                     credentialsId: 'jenkins-example-github-pat'
             }
