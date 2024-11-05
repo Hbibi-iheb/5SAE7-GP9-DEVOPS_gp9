@@ -7,6 +7,7 @@ pipeline {
         KUBECONFIG = '/path/to/your/kubeconfig'
         NEXUS_URL = 'http://192.168.33.10:8081/repository/sahraoui_repository/' 
         NEXUS_CREDENTIALS_ID = 'nexus-credentials' 
+        EMAIL_RECIPIENT = 'sahraoui.guesmi@gmail.com' // Adresse e-mail pour les notifications
     }
     stages {
         stage('GIT') {
@@ -17,16 +18,15 @@ pipeline {
             }
         }
 
-       stage('JUnit/Mockito') {
-    steps {
-        script {
-            sh "mvn clean install -DskipTests"
-            sh "mvn test"
-            junit '**/target/surefire-reports/*.xml'
+        stage('JUnit/Mockito') {
+            steps {
+                script {
+                    sh "mvn clean install -DskipTests"
+                    sh "mvn test"
+                    junit '**/target/surefire-reports/*.xml'
+                }
+            }
         }
-    }
-}
-
 
         stage('Maven Build') {
             steps {
@@ -59,7 +59,6 @@ pipeline {
         stage('Monitoring Services G/P') {
             steps {
                 script {
-                 
                     sh '''
                     if [ "$(docker ps -q -f name=prometheus)" ]; then
                         echo "Prometheus is already running."
@@ -73,8 +72,7 @@ pipeline {
                         fi
                     fi
                     '''
-
-                 
+                    
                     sh '''
                     if [ "$(docker ps -q -f name=grafana)" ]; then
                         echo "Grafana is already running."
@@ -119,11 +117,21 @@ pipeline {
             steps {
                 sh 'docker-compose up -d'
             }
-        } 
+        }
+
+        // Stage pour envoyer un e-mail de notification
+        stage('Email') {
+            steps {
+                script {
+                    def subject = "Build ${currentBuild.currentResult}: ${env.JOB_NAME} #${env.BUILD_NUMBER}"
+                    def body = "Le build ${currentBuild.currentResult} pour le projet ${env.JOB_NAME} a été exécuté. Consultez les détails sur Jenkins : ${env.BUILD_URL}."
+                    mail to: "${EMAIL_RECIPIENT}", subject: subject, body: body
+                }
+            }
+        }
     }
     post {
         always {
-           
             junit '**/target/surefire-reports/*.xml'
         }
     }
