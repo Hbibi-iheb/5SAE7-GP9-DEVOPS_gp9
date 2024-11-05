@@ -140,6 +140,5 @@ steps {
             junit '**/target/surefire-reports/*.xml'
         }
     } 
-    }
 }
-
+}
