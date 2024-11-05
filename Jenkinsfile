@@ -32,6 +32,19 @@ pipeline {
                 }
             }
         }
+        stages {
+        stage('Build') {
+            steps {
+                
+                sh 'mvn clean install'
+            }
+        }
+        stage('JUNIT/Mockito') {
+            steps {
+                sh 'mvn test'
+            }
+        }
+    }
 
         stage('JUNIT/Mockito') {
             steps {
