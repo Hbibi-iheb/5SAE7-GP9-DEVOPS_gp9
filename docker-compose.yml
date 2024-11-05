@@ -11,7 +11,7 @@ services:
 
 
   spring-boot-app:
-    image: sahraouiguesmi/ski-devops:1.0.0
+    image: MohameSahraouiGuesmi-GP9-ski:1.0.0
     container_name: docker-compose-spring-boot
     ports:
       - "8088:8089"
