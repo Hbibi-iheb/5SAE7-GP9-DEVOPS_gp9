@@ -11,24 +11,25 @@ pipeline {
                     credentialsId: 'jenkins-example-github-pat'
             }
         }
-        
-   
-       stage('build and test ')
-        { steps{
-            script{
-            sh " mvn clean install -X -DscriptTests=true"
-            sh " mvn test"}
+
+        stage('build and test') {
+            steps {
+                script {
+                    sh "mvn clean install -X -DscriptTests=true"
+                    sh "mvn test"
+                }
+            }
         }
+
+        stage('maven build') {
+            steps {
+                script {
+                    sh "mvn package -DscriptTests=true"
+                }
+            }
         }
-        
-    stage('maven build') {
-steps {
-    script {
-        sh "mvn package -DscriptTests=true"
-    }
-}
-    } 
-                stage('JUnit/Mockito') {
+
+        stage('JUnit/Mockito') {
             steps {
                 script {
                     sh "mvn clean install -DskipTests"
@@ -38,29 +39,25 @@ steps {
             }
         }
 
-       
-    stage('SonarQube Scanner') {
+        stage('SonarQube Scanner') {
             steps {
-                
-                    withSonarQubeEnv('sonarqube') {
-                 script{
-                 
-                    sh "mvn sonar:sonar"
-                 }
-
-
+                withSonarQubeEnv('sonarqube') {
+                    script {
+                        sh "mvn sonar:sonar"
+                    }
                 }
-                
             }
         }
-        stage('nexus'){
+
+        stage('nexus') {
             steps {
                 script {
-                  sh ' mvn deploy  '
+                    sh 'mvn deploy'
                 }
             }
         }
-         stage('Graphana/Prometheus') {
+
+        stage('Grafana/Prometheus') {
             steps {
                 script {
                     sh '''
@@ -76,7 +73,6 @@ steps {
                         fi
                     fi
                     '''
-                    
                     sh '''
                     if [ "$(docker ps -q -f name=grafana)" ]; then
                         echo "Grafana is already running."
@@ -93,39 +89,40 @@ steps {
                 }
             }
         }
-              
-          stage('Build Docker Image') {
+
+        stage('Build Docker Image') {
             steps {
                 script {
-                    try{
-                    sh 'mvn clean package -DscriptTests'
-                    sh 'docker build -t iheb141/ski-devops:1.0.0 .'
-                    } catch(e){
-                     echo "Docker build failed: ${e}"
-                        currentBuild.result = 'FAILURE' 
+                    try {
+                        sh 'mvn clean package -DscriptTests'
+                        sh 'docker build -t iheb141/ski-devops:1.0.0 .'
+                    } catch(e) {
+                        echo "Docker build failed: ${e}"
+                        currentBuild.result = 'FAILURE'
                         error("Docker image build failed")
                     }
                 }
-            
+            }
         }
-         }
-               stage('Deploy Docker Image') {
+
+        stage('Deploy Docker Image') {
             steps {
-             
                 script {
-                 withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
-                    sh 'docker login -u iheb141 -p ${dockerhubpwd}'
-                 }  
-                 sh 'docker push iheb141/ski-devops:1.0.0'
+                    withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
+                        sh 'docker login -u iheb141 -p ${dockerhubpwd}'
+                    }
+                    sh 'docker push iheb141/ski-devops:1.0.0'
                 }
             }
         }
-         stage('Deploy with Docker Compose') {
+
+        stage('Deploy with Docker Compose') {
             steps {
                 sh 'docker-compose up -d'
             }
-        } 
-         stage('Email') {
+        }
+
+        stage('Email') {
             steps {
                 script {
                     def subject = "Build ${currentBuild.currentResult}: ${env.JOB_NAME} #${env.BUILD_NUMBER}"
@@ -134,11 +131,11 @@ steps {
                 }
             }
         }
+    }
     
     post {
         always {
             junit '**/target/surefire-reports/*.xml'
         }
-    } 
-}
+    }
 }
