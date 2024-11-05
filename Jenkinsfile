@@ -16,23 +16,33 @@ pipeline {
             }
         }
 
-        stage('Build and Test') {
+        stage('Build and Test with Mockito') {
             steps {
                 script {
-                    sh "mvn clean install -X -DscriptTests=true"
+                    // Clean and install dependencies while skipping tests
+                    sh "mvn clean install -DskipTests"
+                    
+                    // Run the tests, including Mockito tests
                     sh "mvn test"
                 }
+            }
+        }
+
+        stage('Publish Test Results') {
+            steps {
+                // Publish JUnit test results
+                junit '**/target/surefire-reports/*.xml'
             }
         }
 
         stage('Maven Build') {
             steps {
                 script {
-                    sh "mvn package -DscriptTests=true"
+                    sh "mvn package"
                 }
             }
         }
-        
+
         stage('SonarQube Scanner') {
             steps {
                 withSonarQubeEnv('sonarqube') {
@@ -43,58 +53,57 @@ pipeline {
             }
         }
 
-       stage('Nexus Deployment') {
-    steps {
-        script {
-            // Using double quotes for the shell command
-            sh """
-                mvn deploy -DskipTests -DaltDeploymentRepository=sahraoui_repository::default::http://admin:nexus@192.168.33.10:8081/repository/sahraoui_repository/
-            """
+        stage('Nexus Deployment') {
+            steps {
+                script {
+                    sh """
+                        mvn deploy -DskipTests -DaltDeploymentRepository=sahraoui_repository::default::http://admin:nexus@192.168.33.10:8081/repository/sahraoui_repository/
+                    """
+                }
+            }
         }
-    }
-}
 
         stage('Monitoring Services G/P') {
-    steps {
-        script {
-            // Check and start Prometheus container if not already running
-            sh '''
-            if [ "$(docker ps -q -f name=prometheus)" ]; then
-                echo "Prometheus is already running."
-            else
-                if [ "$(docker ps -a -q -f name=prometheus)" ]; then
-                    docker start prometheus
-                    echo "Started existing Prometheus container."
-                else
-                    docker run -d --name prometheus prom/prometheus
-                    echo "Started a new Prometheus container."
-                fi
-            fi
-            '''
+            steps {
+                script {
+                    // Check and start Prometheus container if not already running
+                    sh '''
+                    if [ "$(docker ps -q -f name=prometheus)" ]; then
+                        echo "Prometheus is already running."
+                    else
+                        if [ "$(docker ps -a -q -f name=prometheus)" ]; then
+                            docker start prometheus
+                            echo "Started existing Prometheus container."
+                        else
+                            docker run -d --name prometheus prom/prometheus
+                            echo "Started a new Prometheus container."
+                        fi
+                    fi
+                    '''
 
-            // Check and start Grafana container if not already running
-            sh '''
-            if [ "$(docker ps -q -f name=grafana)" ]; then
-                echo "Grafana is already running."
-            else
-                if [ "$(docker ps -a -q -f name=grafana)" ]; then
-                    docker start grafana
-                    echo "Started existing Grafana container."
-                else
-                    docker run -d --name grafana grafana/grafana
-                    echo "Started a new Grafana container."
-                fi
-            fi
-            '''
+                    // Check and start Grafana container if not already running
+                    sh '''
+                    if [ "$(docker ps -q -f name=grafana)" ]; then
+                        echo "Grafana is already running."
+                    else
+                        if [ "$(docker ps -a -q -f name=grafana)" ]; then
+                            docker start grafana
+                            echo "Started existing Grafana container."
+                        else
+                            docker run -d --name grafana grafana/grafana
+                            echo "Started a new Grafana container."
+                        fi
+                    fi
+                    '''
+                }
+            }
         }
-    }
-}
 
         stage('Build Docker Image') {
             steps {
                 script {
                     try {
-                        sh 'mvn clean package -DscriptTests=true'
+                        sh 'mvn clean package'
                         sh 'docker build -t sahraouiguesmi/ski-devops:1.0.0 .'
                     } catch (e) {
                         echo "Docker build failed: ${e}"
@@ -104,23 +113,25 @@ pipeline {
                 }
             }
         }
-         
+
         stage('Dockerhub') {
             steps {
-                echo 'Push Image to dockerhub : ';
-                sh 'docker login -u sahraouiguesmi -p dockerhub';
-                sh 'docker push sahraouiguesmi/ski-devops:1.0.0';
+                echo 'Push Image to Docker Hub: '
+                sh 'docker login -u sahraouiguesmi -p dockerhub'
+                sh 'docker push sahraouiguesmi/ski-devops:1.0.0'
             }
         }
 
-     stage('Deploy with Docker Compose') {
+        stage('Deploy with Docker Compose') {
             steps {
                 sh 'docker-compose up -d'
             }
         } 
-        
+    }
+    post {
+        always {
+            // Publish JUnit test results
+            junit '**/target/surefire-reports/*.xml'
+        }
     }
 }
-
-
-        
