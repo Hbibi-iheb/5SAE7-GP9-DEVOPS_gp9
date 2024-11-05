@@ -4,7 +4,6 @@ pipeline {
         maven 'M2_HOME' 
     }
     environment {
-        KUBECONFIG = '/path/to/your/kubeconfig'
         NEXUS_URL = 'http://192.168.33.10:8081/repository/sahraoui_repository/' 
         NEXUS_CREDENTIALS_ID = 'nexus-credentials' 
         EMAIL_RECIPIENT = 'sahraoui.guesmi@gmail.com' 
