@@ -110,7 +110,7 @@ pipeline {
             steps {
                 echo 'Push Image to Docker Hub: '
                 sh 'docker login -u sahraouiguesmi -p dockerhub'
-                sh 'docker push mohamesahraouiguesmi-gp9-ski:1.0.0'
+                sh 'docker push sahraouiguesmi/mohamesahraouiguesmi-gp9-ski:1.0.0'
             }
         }
 
