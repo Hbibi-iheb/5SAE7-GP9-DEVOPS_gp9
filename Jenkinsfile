@@ -96,7 +96,7 @@ pipeline {
                 script {
                     try {
                         sh 'mvn clean package'
-                        sh 'docker build -t sahraouiguesmi/ski-devops:1.0.0 .'
+                        sh 'docker build -t MohameSahraouiGuesmi-GP9-ski:1.0.0 .'
                     } catch (e) {
                         echo "Docker build failed: ${e}"
                         currentBuild.result = 'FAILURE'
@@ -110,7 +110,7 @@ pipeline {
             steps {
                 echo 'Push Image to Docker Hub: '
                 sh 'docker login -u sahraouiguesmi -p dockerhub'
-                sh 'docker push sahraouiguesmi/ski-devops:1.0.0'
+                sh 'docker push MohameSahraouiGuesmi-GP9-ski:1.0.0'
             }
         }
 
