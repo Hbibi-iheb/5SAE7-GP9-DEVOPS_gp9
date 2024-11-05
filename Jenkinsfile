@@ -96,7 +96,7 @@ pipeline {
                 script {
                     try {
                         sh 'mvn clean package'
-                        sh 'docker build -t mohamesahraouiguesmi-gp9-ski:1.0.0 .'
+                        sh 'docker build -t sahraouiguesmi/mohamesahraouiguesmi-gp9-ski:1.0.0 .'
                     } catch (e) {
                         echo "Docker build failed: ${e}"
                         currentBuild.result = 'FAILURE'
