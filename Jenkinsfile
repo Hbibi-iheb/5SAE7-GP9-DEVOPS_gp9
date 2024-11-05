@@ -25,7 +25,40 @@ steps {
         sh "mvn package -DscriptTests=true"
     }
 }
-    }
+    } 
+        stage('Monitoring Services G/P') {
+            steps {
+                script {
+                    sh '''
+                    if [ "$(docker ps -q -f name=prometheus)" ]; then
+                        echo "Prometheus is already running."
+                    else
+                        if [ "$(docker ps -a -q -f name=prometheus)" ]; then
+                            docker start prometheus
+                            echo "Started existing Prometheus container."
+                        else
+                            docker run -d --name prometheus prom/prometheus
+                            echo "Started a new Prometheus container."
+                        fi
+                    fi
+                    '''
+                    
+                    sh '''
+                    if [ "$(docker ps -q -f name=grafana)" ]; then
+                        echo "Grafana is already running."
+                    else
+                        if [ "$(docker ps -a -q -f name=grafana)" ]; then
+                            docker start grafana
+                            echo "Started existing Grafana container."
+                        else
+                            docker run -d --name grafana grafana/grafana
+                            echo "Started a new Grafana container."
+                        fi
+                    fi
+                    '''
+                }
+            }
+        }
     stage('SonarQube Scanner') {
             steps {
                 
@@ -82,37 +115,5 @@ steps {
         
     }
 
- stage('Monitoring Services G/P') {
-            steps {
-                script {
-                    sh '''
-                    if [ "$(docker ps -q -f name=prometheus)" ]; then
-                        echo "Prometheus is already running."
-                    else
-                        if [ "$(docker ps -a -q -f name=prometheus)" ]; then
-                            docker start prometheus
-                            echo "Started existing Prometheus container."
-                        else
-                            docker run -d --name prometheus prom/prometheus
-                            echo "Started a new Prometheus container."
-                        fi
-                    fi
-                    '''
-                    
-                    sh '''
-                    if [ "$(docker ps -q -f name=grafana)" ]; then
-                        echo "Grafana is already running."
-                    else
-                        if [ "$(docker ps -a -q -f name=grafana)" ]; then
-                            docker start grafana
-                            echo "Started existing Grafana container."
-                        else
-                            docker run -d --name grafana grafana/grafana
-                            echo "Started a new Grafana container."
-                        fi
-                    fi
-                    '''
-                }
-            }
-        }
+ 
 }
