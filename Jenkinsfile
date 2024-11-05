@@ -32,25 +32,7 @@ pipeline {
                 }
             }
         }
-        stages {
-        stage('Build') {
-            steps {
-                sh 'mvn clean install' // Build step
-            }
-        }
-        stage('JUNIT/Mockito') {
-            steps {
-                sh 'mvn test' // Run your tests here
-            }
-        }
-    }
-
-    post {
-        always {
-            junit '**/target/surefire-reports/*.xml' // Publish JUnit test results
-        }
-    }
-}
+        
         stage('SonarQube Scanner') {
             steps {
                 withSonarQubeEnv('sonarqube') {
