@@ -128,8 +128,6 @@ steps {
         
     }
 
- 
-}
 stage('Email') {
             steps {
                 script {
@@ -145,4 +143,6 @@ stage('Email') {
             junit '**/target/surefire-reports/*.xml'
         }
     }
+} 
 }
+
