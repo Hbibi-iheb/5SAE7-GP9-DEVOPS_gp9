@@ -58,7 +58,7 @@ pipeline {
         stage('Monitoring Services G/P') {
             steps {
                 script {
-                    // Check and start Prometheus container if not already running
+                 
                     sh '''
                     if [ "$(docker ps -q -f name=prometheus)" ]; then
                         echo "Prometheus is already running."
