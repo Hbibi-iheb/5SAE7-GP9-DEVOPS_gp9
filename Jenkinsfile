@@ -35,27 +35,19 @@ pipeline {
         stages {
         stage('Build') {
             steps {
-                
-                sh 'mvn clean install'
+                sh 'mvn clean install' // Build step
             }
         }
         stage('JUNIT/Mockito') {
             steps {
-                sh 'mvn test'
-            }
-        }
-    }
-
-        stage('JUNIT/Mockito') {
-            steps {
-                sh 'mvn test'
+                sh 'mvn test' // Run your tests here
             }
         }
     }
 
     post {
         always {
-            junit '**/target/surefire-reports/*.xml'
+            junit '**/target/surefire-reports/*.xml' // Publish JUnit test results
         }
     }
 }
