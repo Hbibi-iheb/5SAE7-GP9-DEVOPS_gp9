@@ -7,7 +7,7 @@ pipeline {
         KUBECONFIG = '/path/to/your/kubeconfig'
         NEXUS_URL = 'http://192.168.33.10:8081/repository/sahraoui_repository/' 
         NEXUS_CREDENTIALS_ID = 'nexus-credentials' 
-        EMAIL_RECIPIENT = 'sahraoui.guesmi@gmail.com' // Adresse e-mail pour les notifications
+        EMAIL_RECIPIENT = 'sahraoui.guesmi@gmail.com' 
     }
     stages {
         stage('GIT') {
@@ -119,7 +119,7 @@ pipeline {
             }
         }
 
-        // Stage pour envoyer un e-mail de notification
+       
         stage('Email') {
             steps {
                 script {
