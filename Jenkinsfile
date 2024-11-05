@@ -60,7 +60,7 @@ steps {
                 }
             }
         }
-         stage('Monitoring Services G/P') {
+         stage('Graphana/Prometheus') {
             steps {
                 script {
                     sh '''
