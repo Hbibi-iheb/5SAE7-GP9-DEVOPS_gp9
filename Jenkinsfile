@@ -33,6 +33,18 @@ pipeline {
             }
         }
 
+        stage('Mockito Test ') {
+            steps {
+                sh 'mvn test'
+            }
+        }
+    }
+    post {
+        always {
+            junit '**/target/surefire-reports/*.xml'
+        }
+    }
+}
         stage('SonarQube Scanner') {
             steps {
                 withSonarQubeEnv('sonarqube') {
