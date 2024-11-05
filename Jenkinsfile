@@ -1,11 +1,11 @@
 pipeline {
     agent any
     tools {
-        maven 'M2_HOME' // Ensure this matches your Jenkins configuration
+        maven 'M2_HOME' 
     }
     environment {
-        NEXUS_URL = 'http://192.168.33.10:8081/repository/sahraoui_repository/' // Nexus repository URL
-        NEXUS_CREDENTIALS_ID = 'nexus-credentials' // Update with your actual Jenkins credentials ID for Nexus
+        NEXUS_URL = 'http://192.168.33.10:8081/repository/sahraoui_repository/' 
+        NEXUS_CREDENTIALS_ID = 'nexus-credentials' 
     }
     stages {
         stage('GIT') {
@@ -73,7 +73,7 @@ pipeline {
                     fi
                     '''
 
-                    // Check and start Grafana container if not already running
+                 
                     sh '''
                     if [ "$(docker ps -q -f name=grafana)" ]; then
                         echo "Grafana is already running."
@@ -122,7 +122,7 @@ pipeline {
     }
     post {
         always {
-            // Publish JUnit test results
+           
             junit '**/target/surefire-reports/*.xml'
         }
     }
