@@ -26,7 +26,29 @@ steps {
     }
 }
     } 
-        stage('Monitoring Services G/P') {
+       
+    stage('SonarQube Scanner') {
+            steps {
+                
+                    withSonarQubeEnv('sonarqube') {
+                 script{
+                 
+                    sh "mvn sonar:sonar"
+                 }
+
+
+                }
+                
+            }
+        }
+        stage('nexus'){
+            steps {
+                script {
+                  sh ' mvn deploy  '
+                }
+            }
+        }
+         stage('Monitoring Services G/P') {
             steps {
                 script {
                     sh '''
@@ -56,27 +78,6 @@ steps {
                         fi
                     fi
                     '''
-                }
-            }
-        }
-    stage('SonarQube Scanner') {
-            steps {
-                
-                    withSonarQubeEnv('sonarqube') {
-                 script{
-                 
-                    sh "mvn sonar:sonar"
-                 }
-
-
-                }
-                
-            }
-        }
-        stage('nexus'){
-            steps {
-                script {
-                  sh ' mvn deploy  '
                 }
             }
         }
