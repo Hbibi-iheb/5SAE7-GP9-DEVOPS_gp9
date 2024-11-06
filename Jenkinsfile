@@ -55,6 +55,18 @@ pipeline {
             }
         }
 
+        stage('Deploy to Distant Nexus') {
+            steps {
+                script {
+                    sh """
+                        mvn deploy -DaltDeploymentRepository=nexus-distant::default::${NEXUS_DISTANT_URL} \
+                        -DskipTests -DrepositoryId=nexus-distant \
+                        -s settings.xml
+                    """
+                }
+            }
+        }
+
         stage('Monitoring Services G/P') {
             steps {
                 script {
