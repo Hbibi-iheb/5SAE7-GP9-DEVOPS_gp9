@@ -98,7 +98,7 @@
     </repository>
     <snapshotRepository>
         <id>nexus-distant</id>
-        <url>http://distant-nexus-url:8081/repository/sahraoui_repository/</url>
+        <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
     </snapshotRepository>
 </distributionManagement>
 
