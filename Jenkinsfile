@@ -27,6 +27,23 @@ pipeline {
             }
         }
 
+        stage('Generate Coverage Report') {
+            steps {
+                script {
+                    sh 'mvn jacoco:report'
+                }
+            }
+            post {
+                success {
+                    jacoco execPattern: '**/target/jacoco.exec',
+                           classPattern: '**/target/classes',
+                           sourcePattern: '**/src/main/java',
+                           inclusionPattern: '**/*.class',
+                           exclusionPattern: '**/*Test*'
+                }
+            }
+        }
+
         stage('Maven Build') {
             steps {
                 script {
@@ -49,31 +66,11 @@ pipeline {
             steps {
                 script {
                     sh """
-                        mvn deploy -DskipTests -DaltDeploymentRepository=sahraoui_repository::default::http://admin:nexus@192.168.33.10:8081/repository/sahraoui_repository/
+                        mvn deploy -DskipTests -DaltDeploymentRepository=sahraoui_repository::default::${NEXUS_URL}
                     """
                 }
             }
         }
-        stage('Generate Coverage Report') {
-            steps {
-                script {
-                    sh 'mvn jacoco:report'
-                }
-            }
-        }
-    }
-
-    post {
-        always {
-           
-            jacoco execPattern: '**/target/jacoco.exec',
-                   classPattern: '**/target/classes',
-                   sourcePattern: '**/src/main/java',
-                   inclusionPattern: '**/*.class',
-                   exclusionPattern: '**/*Test*'
-        }
-    }
-
 
         stage('Monitoring Services G/P') {
             steps {
@@ -148,9 +145,16 @@ pipeline {
             }
         }
     }
+
     post {
         always {
             junit '**/target/surefire-reports/*.xml'
+        }
+        success {
+            echo 'Build completed successfully.'
+        }
+        failure {
+            echo 'Build failed.'
         }
     }
 }
