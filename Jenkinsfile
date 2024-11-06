@@ -73,7 +73,7 @@ pipeline {
                    exclusionPattern: '**/*Test*'
         }
     }
-}
+
 
         stage('Monitoring Services G/P') {
             steps {
