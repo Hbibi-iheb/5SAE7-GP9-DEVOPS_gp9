@@ -1,7 +1,7 @@
 pipeline {
     agent any
     tools {
-        maven 'M2_HOME' 
+        maven 'M2_HOME'
     }
     environment {
         NEXUS_URL = 'http://192.168.33.10:8081/repository/sahraoui_repository/' 
@@ -55,18 +55,16 @@ pipeline {
             }
         }
 
-       stage('Distant Nexus Deployment') {
+        // Distant Nexus Deployment Stage
+        stage('Distant Nexus Deployment') {
             steps {
-                withEnv([
-                    "NEXUS_URL=${env.NEXUS_URL}",
-                    "NEXUS_REPO_ID=${env.NEXUS_REPO_ID}",
-                    "NEXUS_CREDENTIALS_ID=${env.NEXUS_CREDENTIALS_ID}"
-                ]) {
+                withCredentials([usernamePassword(credentialsId: "${NEXUS_CREDENTIALS_ID}", usernameVariable: 'NEXUS_USERNAME', passwordVariable: 'NEXUS_PASSWORD')]) {
                     script {
                         sh """
                             mvn deploy -DskipTests \
-                            -DaltDeploymentRepository=\${NEXUS_REPO_ID}::default::\${NEXUS_URL} \
-                            -Dnexus.credentialsId=\${NEXUS_CREDENTIALS_ID}
+                            -DaltDeploymentRepository=sahraoui_repository::default::${NEXUS_URL} \
+                            -Dnexus.username=${NEXUS_USERNAME} \
+                            -Dnexus.password=${NEXUS_PASSWORD}
                         """
                     }
                 }
@@ -136,7 +134,6 @@ pipeline {
             }
         }
 
-       
         stage('Email') {
             steps {
                 script {
