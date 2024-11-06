@@ -95,13 +95,14 @@
         <id>deploymentRepo</id>
         <name>Nexus Repository</name>
         <url>http://192.168.33.10:8081/repository/sahraoui_repository/</url>
-    </repository> <!-- Cette balise était mal fermée -->
+    </repository>
     <repository>
         <id>nexus-distant</id>
         <name>Sonatype Nexus Staging Repository</name>
         <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
     </repository>
 </distributionManagement>
+
 
 
 </project>
