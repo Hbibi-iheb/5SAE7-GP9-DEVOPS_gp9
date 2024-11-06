@@ -54,6 +54,26 @@ pipeline {
                 }
             }
         }
+        stage('Generate Coverage Report') {
+            steps {
+                script {
+                    sh 'mvn jacoco:report'
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+           
+            jacoco execPattern: '**/target/jacoco.exec',
+                   classPattern: '**/target/classes',
+                   sourcePattern: '**/src/main/java',
+                   inclusionPattern: '**/*.class',
+                   exclusionPattern: '**/*Test*'
+        }
+    }
+}
 
         stage('Monitoring Services G/P') {
             steps {
