@@ -1,7 +1,7 @@
 <servers>
     <server>
-        <id>nexus-distant</id>
-        <username>${env.NEXUS_USER}</username>
-        <password>${env.NEXUS_PASS}</password>
+        <id>sonatype-nexus-staging</id>
+        <username>your_sonatype_username</username>
+        <password>your_sonatype_password_or_token</password>
     </server>
 </servers>
