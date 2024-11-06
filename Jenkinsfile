@@ -27,7 +27,7 @@ pipeline {
             }
         }
 
-        stage('Jacoco Report') {
+        stage('Report coverage: Jacoco') {
             steps {
                 script {
                     sh 'mvn jacoco:report'
