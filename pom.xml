@@ -91,15 +91,15 @@
 	</build>
 
 	<distributionManagement>
-		<repository>
-			<id>deploymentRepo</id>
-			<name>Nexus Repository</name>
-			<url>http://192.168.33.10:8081/repository/sahraoui_repository/</url>
-		</repository>
-		<repository>
-			<id>nexus-distant</id>
-			<name>Distant Nexus Repository</name>
-			<url>http://distant-nexus-url:8081/repository/sahraoui_repository/</url>
-		</repository>
-	</distributionManagement>
+    <repository>
+        <id>deploymentRepo</id>
+        <name>Nexus Repository</name>
+        <url>http://192.168.33.10:8081/repository/sahraoui_repository/</url>
+    </repository>
+    <snapshotRepository>
+        <id>nexus-distant</id>
+        <url>http://distant-nexus-url:8081/repository/sahraoui_repository/</url>
+    </snapshotRepository>
+</distributionManagement>
+
 </project>
