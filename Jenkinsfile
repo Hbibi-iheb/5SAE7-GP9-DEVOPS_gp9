@@ -27,7 +27,7 @@ pipeline {
             }
         }
 
-        stage('Generate Coverage Report') {
+        stage('Jacoco Report') {
             steps {
                 script {
                     sh 'mvn jacoco:report'
