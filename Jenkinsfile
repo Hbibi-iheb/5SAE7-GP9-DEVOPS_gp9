@@ -66,6 +66,7 @@ pipeline {
                 }
             }
         }
+     }
 
         stage('Monitoring Services G/P') {
             steps {
