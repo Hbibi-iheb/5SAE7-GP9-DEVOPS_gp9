@@ -55,18 +55,23 @@ pipeline {
             }
         }
 
-        stage('Deploy to Distant Nexus') {
+       stage('Distant Nexus Deployment') {
             steps {
-                script {
-                    sh """
-                        mvn deploy -DaltDeploymentRepository=nexus-distant::default::${NEXUS_DISTANT_URL} \
-                        -DskipTests -DrepositoryId=nexus-distant \
-                        -s settings.xml
-                    """
+                withEnv([
+                    "NEXUS_URL=${env.NEXUS_URL}",
+                    "NEXUS_REPO_ID=${env.NEXUS_REPO_ID}",
+                    "NEXUS_CREDENTIALS_ID=${env.NEXUS_CREDENTIALS_ID}"
+                ]) {
+                    script {
+                        sh """
+                            mvn deploy -DskipTests \
+                            -DaltDeploymentRepository=\${NEXUS_REPO_ID}::default::\${NEXUS_URL} \
+                            -Dnexus.credentialsId=\${NEXUS_CREDENTIALS_ID}
+                        """
+                    }
                 }
             }
         }
-     }
 
         stage('Monitoring Services G/P') {
             steps {
