@@ -1,0 +1,7 @@
+<servers>
+    <server>
+        <id>nexus-distant</id>
+        <username>${env.NEXUS_USER}</username>
+        <password>${env.NEXUS_PASS}</password>
+    </server>
+</servers>
