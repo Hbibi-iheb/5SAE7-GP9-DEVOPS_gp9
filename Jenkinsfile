@@ -20,7 +20,7 @@ pipeline {
             steps {
                 script {
                     // Retrieve the Git token from Jenkins credentials
-                    withCredentials([string(credentialsId: 'jenkins-example-github-pat', variable: 'GIT_TOKEN')]) {
+                    withCredentials([string(credentialsId: 'sahra token', variable: 'GIT_TOKEN')]) {
                         // Clone the repository using the Git token for authentication
                         sh 'git clone https://${GIT_TOKEN}@github.com/Sahraoui44/5SAE7-GP9-DEVOPS_gp9.git -b Mohamed_Sahraoui_Guesmi_5sae7_GP9'
                         echo 'Repository successfully cloned using Git token'
