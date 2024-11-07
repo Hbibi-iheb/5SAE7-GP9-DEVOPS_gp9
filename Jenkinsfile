@@ -94,11 +94,10 @@ pipeline {
 
         stage("Docker Hub") {
             steps {
-                withCredentials([string(credentialsId: 'docker-hub-password', variable: 'DOCKER_HUB_PASSWORD')]) {
-                    sh "docker login -u abdell333 -p ${DOCKER_HUB_PASSWORD}"
+                    sh "docker login -u abdell333 -p dckr_pat_O1QWlvActCG_zNmgH3L45n-l2RQ"
                     sh "docker tag abdelwahebdhib-5sae7-g9-ski-management:1.0 abdell333/abdelwahebdhib-5sae7-g9-ski-management:1.0"
                     sh "docker push abdell333/abdelwahebdhib-5sae7-g9-ski-management:1.0"
-                }
+
             }
         }
 
