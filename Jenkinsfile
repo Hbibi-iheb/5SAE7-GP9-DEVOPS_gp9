@@ -16,7 +16,7 @@ pipeline {
                     credentialsId: 'jenkins-example-github-pat'
             }
         }
-   stage('Git Operations') {
+    stage('Git Operations') {
             steps {
                 script {
                     // Retrieve the Git token from Jenkins credentials
