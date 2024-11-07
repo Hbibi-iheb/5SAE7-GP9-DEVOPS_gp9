@@ -13,19 +13,10 @@ pipeline {
             steps {
                 git branch: 'Mohamed_Sahraoui_Guesmi_5sae7_GP9',
                     url: 'https://github.com/Hbibi-iheb/5SAE7-GP9-DEVOPS_gp9.git',
-                    credentialsId: 'jenkins-example-github-pat'
+                    credentialsId: 'SAHRA_TOKEN'
             }
         }
-   stage('Git Operations') {
-            steps {
-                script {
-                    withCredentials([string(credentialsId: 'SAHRA_TOKEN', variable: 'GIT_TOKEN')]) {
-                        sh 'git clone https://${GIT_TOKEN}@github.com/Sahraoui44/5SAE7-GP9-DEVOPS_gp9.git -b Mohamed_Sahraoui_Guesmi_5sae7_GP9'
-                        echo 'Repository successfully cloned using Git token'
-                    }
-                }
-            }
-        }
+  
     
 
         stage('JUnit/Mockito') {
