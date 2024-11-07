@@ -81,6 +81,9 @@ pipeline {
                         fi
                     fi
                     '''
+                }
+            }
+        }
               
 
         stage("Docker Image") {
