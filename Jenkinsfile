@@ -106,20 +106,20 @@ pipeline {
                 sh "docker compose up -d"
             }
         }
+        stage('Email') {
+                    steps {
+                        script {
+                            def subject = "Build ${currentBuild.currentResult}: ${env.JOB_NAME} #${env.BUILD_NUMBER}"
+                            def body = "Le build ${currentBuild.currentResult} pour le projet ${env.JOB_NAME} a été exécuté. Consultez les détails sur Jenkins : ${env.BUILD_URL}."
+                            mail to: "${EMAIL_RECIPIENT}", subject: subject, body: body
+                        }
+                    }
+        }
     }
 
     post {
-        success {
-            mail to: 'abdelwaheb.dhib@esprit.tn',
-                subject: 'Successful Build of Jenkins Pipeline',
-                body: 'Great news! The Spring Boot application was built successfully.',
-                from: 'dhibabdeleheb@gmail.com'
-        }
-        failure {
-            mail to: 'abdelwaheb.dhib@esprit.tn',
-                subject: 'Jenkins Build of the Backend Failed',
-                body: 'Unfortunately, the Jenkins build of the Spring Boot backend has encountered an issue and failed.',
-                from: 'dhibabdeleheb@gmail.com'
+        always {
+            junit '**/target/surefire-reports/*.xml'
         }
     }
 }
