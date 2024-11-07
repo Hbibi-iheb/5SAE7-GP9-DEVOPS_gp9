@@ -3,8 +3,8 @@ pipeline {
     tools {
         maven 'M2_HOME'
     } 
-    parameters {
-        string(name: 'EMAIL_RECIPIENT', defaultValue: 'iheb.hbibi01@gmail.com', description: 'Recipient email address for notifications')
+    environment {
+        EMAIL_RECIPIENT = 'iheb.hbibi01@gmail.com' 
     }
     stages {
         stage('GIT') {
