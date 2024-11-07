@@ -4,7 +4,7 @@ pipeline {
     environment {
         SONAR_LOGIN = "admin"
         SONAR_PASSWORD = "Azerty12345@"
-        EMAIL_RECIPIENT = "dhibabdeleheb@gmail.com"
+        EMAIL_RECIPIENT = "abdelwaheb.dhib@esprit.tn"
     }
 
     tools {
