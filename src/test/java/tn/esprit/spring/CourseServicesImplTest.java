@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-import lombok.var;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,6 +17,7 @@ import tn.esprit.spring.repositories.ICourseRepository;
 import tn.esprit.spring.services.CourseServicesImpl;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,27 +33,21 @@ public class CourseServicesImplTest {
 
     @BeforeEach
     public void setUp() {
-        // Initialize the mocked repository
-        courseRepository = mock(ICourseRepository.class);
-        courseServices = new CourseServicesImpl(courseRepository);
-
         // Initialize a sample course object
         course = new Course();
-        course.setNumCourse(1L); // Unique identifier for the course
-        course.setLevel(1); // Example level
-        course.setTypeCourse(TypeCourse.COLLECTIVE_ADULT); // Example type
-        course.setSupport(Support.SKI); // Replace with an actual support value
-        course.setPrice(100.0f); // Example price
-        course.setTimeSlot(2); // Example time slot
-        // Initialize other fields as necessary...
+        course.setNumCourse(1L);
+        course.setLevel(1);
+        course.setTypeCourse(TypeCourse.COLLECTIVE_ADULT);
+        course.setSupport(Support.SKI);
+        course.setPrice(100.0f);
+        course.setTimeSlot(2);
     }
-
 
     @Test
     public void testRetrieveAllCourses() {
         when(courseRepository.findAll()).thenReturn(Arrays.asList(course));
 
-        var courses = courseServices.retrieveAllCourses();
+        List<Course> courses = courseServices.retrieveAllCourses();
 
         assertThat(courses).hasSize(1);
         assertThat(courses.get(0).getNumCourse()).isEqualTo(course.getNumCourse());
