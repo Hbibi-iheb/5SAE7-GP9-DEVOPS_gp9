@@ -16,8 +16,7 @@ pipeline {
                     credentialsId: 'jenkins-example-github-pat'
             }
         }
-   stages {
-        stage('Git Operations') {
+   stage('Git Operations') {
             steps {
                 script {
                     withCredentials([string(credentialsId: 'SAHRA_TOKEN', variable: 'GIT_TOKEN')]) {
