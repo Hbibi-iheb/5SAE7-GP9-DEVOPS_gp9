@@ -2,6 +2,9 @@ pipeline {
     agent any
     tools {
         maven 'M2_HOME'
+    } 
+    parameters {
+        string(name: 'EMAIL_RECIPIENT', defaultValue: 'iheb.hbibi01@gmail.com', description: 'Recipient email address for notifications')
     }
     stages {
         stage('GIT') {
