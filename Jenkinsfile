@@ -16,8 +16,7 @@ pipeline {
                     credentialsId: 'jenkins-example-github-pat'
             }
         }
-stages {
-    stage('Git Operations') {
+    stage('Git Token') {
         steps {
             script {
                 
@@ -28,10 +27,7 @@ stages {
                 }
             }
         }
-    }
     
-
-
 
         stage('JUnit/Mockito') {
             steps {
