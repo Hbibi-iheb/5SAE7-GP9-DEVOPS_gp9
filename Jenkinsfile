@@ -125,7 +125,7 @@ pipeline {
         stage('Dockerhub') {
             steps {
                 echo 'Push Image to Docker Hub: '
-                sh 'docker login -u waelgabsi -p dockerhub'
+                sh 'docker login -u waelgabsi -p waelwael123'
                 sh 'docker push waelgabsi/waelgabsi-gp9-ski:1.0.0'
             }
         }
