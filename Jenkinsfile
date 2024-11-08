@@ -145,7 +145,7 @@ pipeline {
             sh 'docker-compose exec -T mysql-db mysqladmin --user=root --password=root ping'
         }
     }
-}
+
 
 
     post {
