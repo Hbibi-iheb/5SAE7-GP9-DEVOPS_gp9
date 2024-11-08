@@ -138,15 +138,7 @@ pipeline {
             }
         }
 
-        stage('Email') {
-            steps {
-                script {
-                    def subject = "Build ${currentBuild.currentResult}: ${env.JOB_NAME} #${env.BUILD_NUMBER}"
-                    def body = "Le build ${currentBuild.currentResult} pour le projet ${env.JOB_NAME} a été exécuté. Consultez les détails sur Jenkins : ${env.BUILD_URL}."
-                    mail to: "${EMAIL_RECIPIENT}", subject: subject, body: body
-                }
-            }
-        }
+        
     }
 
     post {
