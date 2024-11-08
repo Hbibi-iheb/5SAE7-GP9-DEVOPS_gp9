@@ -7,6 +7,8 @@ pipeline {
         NEXUS_URL = 'http://192.168.33.10:8081/repository/Gabsiwael_repository/' 
         NEXUS_CREDENTIALS_ID = 'nexus-credentials' 
         EMAIL_RECIPIENT = 'wael.gabsi@esprit.tn' 
+         SONAR_LOGIN = "admin"
+        SONAR_PASSWORD = "Admin123@Admin123@"
     }
     stages {
         stage('GIT') {
@@ -34,16 +36,9 @@ pipeline {
                 }
             }
         }
-         stage('SonarQube Scanner') {
+           stage('SonarQube Scanner') {
             steps {
-                withSonarQubeEnv('sonarqube') {
-                    script {
-                        sh """
-                        mvn deplo sonar:sonar 
-                        -Dsonar.login=squ_26842231234541a5dec404bea3532f3d035a654f
-                        """
-                    }
-                }
+                sh "mvn sonar:sonar -Dsonar.login=${env.SONAR_LOGIN} -Dsonar.password=${env.SONAR_PASSWORD}"
             }
         }
 
