@@ -22,7 +22,7 @@ pipeline {
   stage('Maven Build') {
             steps {
                 script {
-                    sh "mvn deploy -DskipTests -DaltDeploymentRepository=Gabsiwael_repository::default::http://admin:nexus@192.168.33.10:8081/repository/Gabsiwael_repository/"
+                    sh "mvn package "
                 }
             }
         }
@@ -44,7 +44,7 @@ pipeline {
 
          stage("Nexus") {
             steps {
-                sh "mvn deploy"
+               sh "mvn deploy -DskipTests -DaltDeploymentRepository=Gabsiwael_repository::default::http://admin:nexus@192.168.33.10:8081/repository/Gabsiwael_repository/"
             }
         }
 
