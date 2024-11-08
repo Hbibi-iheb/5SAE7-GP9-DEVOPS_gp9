@@ -11,7 +11,7 @@ pipeline {
     stages {
         stage('GIT') {
             steps {
-                git branch: 'Mohamed_Sahraoui_Guesmi_5sae7_GP9',
+                git branch: 'GABSI_WAEL_5sae7_GP9',
                     url: 'https://github.com/Hbibi-iheb/GABSI_WAEL_5sae7_GP9.git',
                     credentialsId: ''
             }
