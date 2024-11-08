@@ -34,6 +34,26 @@ pipeline {
                 }
             }
         }
+         stage('SonarQube Scanner') {
+            steps {
+                withSonarQubeEnv('sonarqube') {
+                    script {
+                        sh "mvn sonar:sonar -Dsonar.login=squ_d828b995261ac67dafbcad2256436863f5307661"
+                    }
+                }
+            }
+        }
+
+        stage('Nexus Deployment') {
+            steps {
+                script {
+                    sh """
+                      mvn deploy -DskipTests -DaltDeploymentRepository=Gabsiwael_repository::default::http://admin:nexus@192.168.33.10:8081/repository/Gabsiwael_repository/
+
+                    """
+                }
+            }
+        }
 
         stage('Report coverage: Jacoco') {
             steps {
@@ -54,26 +74,7 @@ pipeline {
 
         
 
-        stage('SonarQube Scanner') {
-            steps {
-                withSonarQubeEnv('sonarqube') {
-                    script {
-                        sh "mvn sonar:sonar -Dsonar.login=squ_d828b995261ac67dafbcad2256436863f5307661"
-                    }
-                }
-            }
-        }
-
-        stage('Nexus Deployment') {
-            steps {
-                script {
-                    sh """
-                      mvn deploy -DskipTests -DaltDeploymentRepository=Gabsiwael_repository::default::http://admin:nexus@192.168.33.10:8081/repository/Gabsiwael_repository/
-
-                    """
-                }
-            }
-        }
+       
 
         stage('Monitoring Services G/P') {
             steps {
