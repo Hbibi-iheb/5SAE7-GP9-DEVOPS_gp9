@@ -1,7 +1,7 @@
 <servers>
-<server>
-      <id>deploymentRepo</id>
-      <username>admin</username>
-      <password>sonatype</password>
+      <server>
+            <id>deploymentRepo</id>
+            <username>admin</username>
+            <password>nexus</password>
     </server>
 </servers>
