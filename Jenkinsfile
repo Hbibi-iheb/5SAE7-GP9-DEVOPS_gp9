@@ -42,14 +42,9 @@ pipeline {
             }
         }
 
-        stage('Nexus Deployment') {
+         stage("Nexus") {
             steps {
-                script {
-                    sh """
-                      mvn deploy -DskipTests -DaltDeploymentRepository=Gabsiwael_repository::default::http://admin:nexus@192.168.33.10:8081/repository/Gabsiwael_repository/
-
-                    """
-                }
+                sh "mvn deploy"
             }
         }
 
