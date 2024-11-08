@@ -4,7 +4,7 @@ pipeline {
         maven 'M2_HOME'
     }
     environment {
-        NEXUS_URL = 'http://192.168.33.10:8081/repository/sahraoui_repository/' 
+        NEXUS_URL = 'http://192.168.33.10:8081/repository/Gabsiwael_repository/' 
         NEXUS_CREDENTIALS_ID = 'nexus-credentials' 
         EMAIL_RECIPIENT = 'wael.gabsi@esprit.tn' 
     }
@@ -68,7 +68,7 @@ pipeline {
             steps {
                 script {
                     sh """
-                      mvn deploy -DskipTests -DaltDeploymentRepository=sahraoui_repository::default::http://admin:nexus@192.168.33.10:8081/repository/sahraoui_repository/
+                      mvn deploy -DskipTests -DaltDeploymentRepository=sahraoui_repository::default::http://admin:nexus@192.168.33.10:8081/repository/Gabsiwael_repository/
 
                     """
                 }
