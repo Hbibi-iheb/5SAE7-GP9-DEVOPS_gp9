@@ -41,10 +41,16 @@ pipeline {
                 sh "mvn sonar:sonar -Dsonar.login=${env.SONAR_LOGIN} -Dsonar.password=${env.SONAR_PASSWORD}"
             }
         }
-  stage("Nexus") {
+  stage('Nexus Deployment') {
             steps {
-                sh "mvn deploy -DskipTests -DaltDeploymentRepository=Gabsiwael_repository::default::${NEXUS_URL}"
+                script {
+                    sh """
+                      mvn deploy -DskipTests -DaltDeploymentRepository=sahraoui_repository::default::http://admin:nexus@192.168.33.10:8081/repository/wael_repository/
+
+                    """
+                }
             }
+        }
 
         stage('Report coverage: Jacoco') {
             steps {
