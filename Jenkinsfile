@@ -10,8 +10,8 @@ pipeline {
         stage('GIT') {
             steps {
                 git branch: 'Hbibi_iheb_5sae7_GP9',
-                    url: 'https://github.com/Hbibi-iheb/5SAE7-GP9-DEVOPS_gp9.git',
-                    credentialsId: 'jenkins-example-github-pat'
+                    url: 'https://github.com/Hbibi-iheb/5SAE7-GP9-DEVOPS_gp9.git'
+                
             }
         }
 
