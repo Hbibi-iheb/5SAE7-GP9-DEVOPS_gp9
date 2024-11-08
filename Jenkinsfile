@@ -28,7 +28,7 @@ pipeline {
         }
     
 
-        /*stage('JUnit/Mockito') {
+        stage('JUnit/Mockito') {
             steps {
                 script {
                     sh "mvn clean install -DskipTests"
@@ -50,7 +50,7 @@ pipeline {
                     """
                 }
             }
-        } */
+        } 
 
         stage('Report coverage: Jacoco') {
             steps {
