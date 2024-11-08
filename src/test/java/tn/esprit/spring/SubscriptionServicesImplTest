@@ -1,0 +1,162 @@
+package tn.esprit.spring;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
+import tn.esprit.spring.entities.*;
+import tn.esprit.spring.repositories.ICourseRepository;
+import tn.esprit.spring.repositories.ISkierRepository;
+import tn.esprit.spring.repositories.ISubscriptionRepository;
+import tn.esprit.spring.services.CourseServicesImpl;
+import tn.esprit.spring.services.SubscriptionServicesImpl;
+
+import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
+public class SubscriptionServicesImplTest {
+    @InjectMocks
+    private SubscriptionServicesImpl subscriptionService;
+
+    @Mock
+    private ISubscriptionRepository subscriptionRepository;
+
+    @Mock
+    private ISkierRepository skierRepository;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    void testAddSubscription() {
+        Subscription subscription = new Subscription();
+        subscription.setTypeSub(TypeSubscription.ANNUAL);
+        subscription.setStartDate(LocalDate.now());
+
+        Subscription expectedSubscription = new Subscription();
+        expectedSubscription.setNumSub(1L);
+        expectedSubscription.setStartDate(subscription.getStartDate());
+        expectedSubscription.setEndDate(subscription.getStartDate().plusYears(1));
+
+        when(subscriptionRepository.save(subscription)).thenReturn(expectedSubscription);
+
+        Subscription savedSubscription = subscriptionService.addSubscription(subscription);
+
+        assertNotNull(savedSubscription);
+        assertEquals(subscription.getStartDate().plusYears(1), savedSubscription.getEndDate());
+        verify(subscriptionRepository, times(1)).save(subscription);
+    }
+
+    @Test
+    void testUpdateSubscription() {
+        Subscription subscription = new Subscription();
+        subscription.setNumSub(1L);
+        subscription.setTypeSub(TypeSubscription.MONTHLY);
+        subscription.setStartDate(LocalDate.now());
+
+        when(subscriptionRepository.save(subscription)).thenReturn(subscription);
+
+        Subscription updatedSubscription = subscriptionService.updateSubscription(subscription);
+
+        assertNotNull(updatedSubscription);
+        assertEquals(subscription.getNumSub(), updatedSubscription.getNumSub());
+        verify(subscriptionRepository, times(1)).save(subscription);
+    }
+
+    @Test
+    void testRetrieveSubscriptionById() {
+        Subscription subscription = new Subscription();
+        subscription.setNumSub(1L);
+
+        when(subscriptionRepository.findById(1L)).thenReturn(Optional.of(subscription));
+
+        Subscription foundSubscription = subscriptionService.retrieveSubscriptionById(1L);
+
+        assertNotNull(foundSubscription);
+        assertEquals(1L, foundSubscription.getNumSub());
+        verify(subscriptionRepository, times(1)).findById(1L);
+    }
+
+    @Test
+    void testGetSubscriptionByType() {
+        Subscription subscription1 = new Subscription();
+        subscription1.setTypeSub(TypeSubscription.MONTHLY);
+        Subscription subscription2 = new Subscription();
+        subscription2.setTypeSub(TypeSubscription.MONTHLY);
+
+        when(subscriptionRepository.findByTypeSubOrderByStartDateAsc(TypeSubscription.MONTHLY))
+                .thenReturn(Set.of(subscription1, subscription2));
+
+        Set<Subscription> subscriptions = subscriptionService.getSubscriptionByType(TypeSubscription.MONTHLY);
+
+        assertEquals(2, subscriptions.size());
+        verify(subscriptionRepository, times(1)).findByTypeSubOrderByStartDateAsc(TypeSubscription.MONTHLY);
+    }
+
+    @Test
+    void testRetrieveSubscriptionsByDates() {
+        Subscription subscription1 = new Subscription();
+        subscription1.setStartDate(LocalDate.of(2023, 1, 1));
+        Subscription subscription2 = new Subscription();
+        subscription2.setStartDate(LocalDate.of(2023, 5, 1));
+
+        when(subscriptionRepository.getSubscriptionsByStartDateBetween(
+                LocalDate.of(2023, 1, 1), LocalDate.of(2023, 12, 31)))
+                .thenReturn(List.of(subscription1, subscription2));
+
+        List<Subscription> subscriptions = subscriptionService.retrieveSubscriptionsByDates(
+                LocalDate.of(2023, 1, 1), LocalDate.of(2023, 12, 31));
+
+        assertEquals(2, subscriptions.size());
+        verify(subscriptionRepository, times(1))
+                .getSubscriptionsByStartDateBetween(LocalDate.of(2023, 1, 1), LocalDate.of(2023, 12, 31));
+    }
+
+    @Test
+    void testRetrieveSubscriptions() {
+        Subscription subscription = new Subscription();
+        subscription.setNumSub(1L);
+        subscription.setEndDate(LocalDate.of(2023, 12, 31));
+
+        Skier skier = new Skier();
+        skier.setFirstName("John");
+        skier.setLastName("Doe");
+
+        when(subscriptionRepository.findDistinctOrderByEndDateAsc()).thenReturn(List.of(subscription));
+        when(skierRepository.findBySubscription(subscription)).thenReturn(skier);
+
+        subscriptionService.retrieveSubscriptions();
+
+        verify(subscriptionRepository, times(1)).findDistinctOrderByEndDateAsc();
+        verify(skierRepository, times(1)).findBySubscription(subscription);
+    }
+
+    @Test
+    void testShowMonthlyRecurringRevenue() {
+        when(subscriptionRepository.recurringRevenueByTypeSubEquals(TypeSubscription.MONTHLY))
+                .thenReturn(1000.0f);
+        when(subscriptionRepository.recurringRevenueByTypeSubEquals(TypeSubscription.SEMESTRIEL))
+                .thenReturn(6000.0f); // 1000/month
+        when(subscriptionRepository.recurringRevenueByTypeSubEquals(TypeSubscription.ANNUAL))
+                .thenReturn(12000.0f); // 1000/month
+
+        subscriptionService.showMonthlyRecurringRevenue();
+
+        verify(subscriptionRepository, times(1)).recurringRevenueByTypeSubEquals(TypeSubscription.MONTHLY);
+        verify(subscriptionRepository, times(1)).recurringRevenueByTypeSubEquals(TypeSubscription.SEMESTRIEL);
+        verify(subscriptionRepository, times(1)).recurringRevenueByTypeSubEquals(TypeSubscription.ANNUAL);
+    }
+}
+
