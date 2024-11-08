@@ -31,7 +31,6 @@ pipeline {
                 script {
                     sh "mvn clean install -DskipTests"
                     sh "mvn test"
-                    junit '**/target/surefire-reports/*.xml'
                 }
             }
         }
