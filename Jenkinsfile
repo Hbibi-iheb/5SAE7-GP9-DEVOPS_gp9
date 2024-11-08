@@ -38,7 +38,10 @@ pipeline {
             steps {
                 withSonarQubeEnv('sonarqube') {
                     script {
-                        sh "mvn sonar:sonar -Dsonar.login=squ_d828b995261ac67dafbcad2256436863f5307661"
+                        sh """
+                        mvn deplo sonar:sonar 
+                        -Dsonar.login=squ_26842231234541a5dec404bea3532f3d035a654f
+                        """
                     }
                 }
             }
