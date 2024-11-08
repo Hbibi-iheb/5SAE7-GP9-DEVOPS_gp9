@@ -45,7 +45,7 @@ pipeline {
             steps {
                 script {
                     sh """
-                      mvn deploy -DskipTests -DaltDeploymentRepository=sahraoui_repository::default::http://admin:nexus@192.168.33.10:8081/repository/wael_repository/
+                      mvn deploy -DskipTests -DaltDeploymentRepository=wael_repository::default::http://admin:nexus@192.168.33.10:8081/repository/wael_repository/
 
                     """
                 }
