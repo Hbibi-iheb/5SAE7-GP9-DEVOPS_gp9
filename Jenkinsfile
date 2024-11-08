@@ -130,14 +130,23 @@ pipeline {
             }
         }
 
-        stage(' Docker Compose') {
-            steps {
-                sh 'docker-compose up -d'
-            }
-        }
+        sstage('Docker Compose') {
+    steps {
+        script {
+            sh 'docker-compose down -v || true'
 
-        
+           
+            sh 'docker-compose up -d'
+
+          
+            sh 'docker-compose logs'
+
+            
+            sh 'docker-compose exec -T mysql-db mysqladmin --user=root --password=root ping'
+        }
     }
+}
+
 
     post {
         always {
