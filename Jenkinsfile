@@ -7,7 +7,7 @@ pipeline {
         NEXUS_URL = 'http://192.168.33.10:8081/repository/Gabsiwael_repository/' 
         NEXUS_CREDENTIALS_ID = 'nexus-credentials' 
         EMAIL_RECIPIENT = 'wael.gabsi@esprit.tn' 
-         SONAR_LOGIN = "admin"
+        SONAR_LOGIN = "admin"
         SONAR_PASSWORD = "Admin123@Admin123@"
     }
     stages {
@@ -15,18 +15,16 @@ pipeline {
             steps {
                 git branch: 'GABSI_WAEL_5sae7_GP9',
                     url: 'https://github.com/Hbibi-iheb/5SAE7-GP9-DEVOPS_gp9.git'
-                     
-                   
             }
         }
-  stage('partie maven building') {
+
+        stage('partie maven building') {
             steps {
                 script {
                     sh "mvn package "
                 }
             }
         }
-    
 
         stage('JUnit/Mockito for testing services') {
             steps {
@@ -36,23 +34,24 @@ pipeline {
                 }
             }
         }
-           stage('SonarQube') {
+
+        stage('SonarQube') {
             steps {
                 sh "mvn sonar:sonar -Dsonar.login=${env.SONAR_LOGIN} -Dsonar.password=${env.SONAR_PASSWORD}"
             }
         }
-  stage('Nexus ') {
+
+        stage('Nexus ') {
             steps {
                 script {
                     sh """
-                      mvn deploy -DskipTests -DaltDeploymentRepository=wael_repository::default::http://admin:nexus@192.168.33.10:8081/repository/wael_repository/
-
+                    mvn deploy -DskipTests -DaltDeploymentRepository=wael_repository::default::http://admin:nexus@192.168.33.10:8081/repository/wael_repository/
                     """
                 }
             }
-        } 
+        }
 
-        stage(' Jacoco') {
+        stage('Jacoco') {
             steps {
                 script {
                     sh 'mvn jacoco:report'
@@ -69,11 +68,7 @@ pipeline {
             }
         }
 
-        
-
-       
-
-        stage(' Services G/P ') {
+        stage('Services G/P') {
             steps {
                 script {
                     sh '''
@@ -107,7 +102,7 @@ pipeline {
             }
         }
 
-        stage('etape de build de limage docker') {
+        stage('Build Docker Image') {
             steps {
                 script {
                     try {
@@ -122,7 +117,7 @@ pipeline {
             }
         }
 
-        stage('Dockerhub account') {
+        stage('Dockerhub Account') {
             steps {
                 echo 'Push Image to Docker Hub: '
                 sh 'docker login -u waelgabsi -p waelwael123'
@@ -131,23 +126,38 @@ pipeline {
         }
 
         stage('Docker Compose') {
-    steps {
-        script {
-            sh 'docker-compose down -v || true'
+            steps {
+                script {
+                    // Ensure Docker Compose is available
+                    sh 'docker-compose --version'
 
-           
-            sh 'docker-compose up -d'
+                    // Stop and remove any existing containers (forcefully if needed)
+                    sh 'docker-compose down -v || true'
 
-          
-            sh 'docker-compose logs'
+                    // Bring up the containers
+                    sh 'docker-compose up -d'
 
-            
-            sh 'docker-compose exec -T mysql-db mysqladmin --user=root --password=root ping'
+                    // Wait and check if MySQL container is ready to accept connections
+                    // This will try to ping MySQL until it responds (up to 5 times, every 10 seconds)
+                    sh '''
+                    for i in {1..5}; do
+                        if docker-compose exec -T mysql-db mysqladmin --user=root --password=root ping; then
+                            echo "MySQL is up and running."
+                            break
+                        else
+                            echo "Waiting for MySQL to start..."
+                            sleep 10
+                        fi
+                    done
+                    '''
+
+                    // Optionally, show logs to help with debugging
+                    sh 'docker-compose logs'
+                }
+            }
         }
     }
-
-
-
+    
     post {
         always {
             junit '**/target/surefire-reports/*.xml'
@@ -159,4 +169,4 @@ pipeline {
             echo 'Build failed.'
         }
     }
-} 
+}
