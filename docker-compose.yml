@@ -18,6 +18,6 @@ services:
     depends_on:
       - mysql-db
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://docker-compose-mysql-db:3306/SkiDatabase?&createDatabaseIfNotExist=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+      - SPRING_DATASOURCE_URL: jdbc:mysql://docker-compose-mysql-db:3306/AZERTYUIOP?&createDatabaseIfNotExist=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
