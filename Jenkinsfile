@@ -11,7 +11,7 @@ pipeline {
         SONAR_PASSWORD = "Admin123@Admin123@"
     }
     stages {
-        stage('GIT') {
+        stage('git') {
             steps {
                 git branch: 'GABSI_WAEL_5sae7_GP9',
                     url: 'https://github.com/Hbibi-iheb/5SAE7-GP9-DEVOPS_gp9.git'
@@ -19,7 +19,7 @@ pipeline {
                    
             }
         }
-  stage('Maven Build') {
+  stage('partie maven building') {
             steps {
                 script {
                     sh "mvn package "
@@ -28,7 +28,7 @@ pipeline {
         }
     
 
-        stage('JUnit/Mockito') {
+        stage('JUnit/Mockito for testing services') {
             steps {
                 script {
                     sh "mvn clean install -DskipTests"
@@ -36,12 +36,12 @@ pipeline {
                 }
             }
         }
-           stage('SonarQube Scanner') {
+           stage('SonarQube') {
             steps {
                 sh "mvn sonar:sonar -Dsonar.login=${env.SONAR_LOGIN} -Dsonar.password=${env.SONAR_PASSWORD}"
             }
         }
-  stage('Nexus Deployment') {
+  stage('Nexus ') {
             steps {
                 script {
                     sh """
@@ -52,7 +52,7 @@ pipeline {
             }
         } 
 
-        stage('Report coverage: Jacoco') {
+        stage(' Jacoco') {
             steps {
                 script {
                     sh 'mvn jacoco:report'
@@ -73,7 +73,7 @@ pipeline {
 
        
 
-        stage('Monitoring Services G/P') {
+        stage(' Services G/P ') {
             steps {
                 script {
                     sh '''
@@ -107,7 +107,7 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
+        stage('etape de build de limage docker') {
             steps {
                 script {
                     try {
@@ -122,7 +122,7 @@ pipeline {
             }
         }
 
-        stage('Dockerhub') {
+        stage('Dockerhub account') {
             steps {
                 echo 'Push Image to Docker Hub: '
                 sh 'docker login -u waelgabsi -p waelwael123'
@@ -130,7 +130,7 @@ pipeline {
             }
         }
 
-        stage('Deploy with Docker Compose') {
+        stage(' Docker Compose') {
             steps {
                 sh 'docker-compose up -d'
             }
