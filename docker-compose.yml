@@ -8,16 +8,21 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_DATABASE=AZERTYUIOP
-
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 30s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
 
   spring-boot-app:
     image: waelgabsi/waelgabsi-gp9-ski:1.0.0
     container_name: docker-compose-spring-boot
     ports:
-      - "8088:8089"
+      - "8088:8088"  
     depends_on:
       - mysql-db
     environment:
-      - SPRING_DATASOURCE_URL: jdbc:mysql://docker-compose-mysql-db:3306/AZERTYUIOP?&createDatabaseIfNotExist=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+      - SPRING_DATASOURCE_URL=jdbc:mysql://docker-compose-mysql-db:3306/AZERTYUIOP?&createDatabaseIfNotExist=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
