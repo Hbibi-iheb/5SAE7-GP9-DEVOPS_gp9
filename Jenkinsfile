@@ -130,7 +130,7 @@ pipeline {
             }
         }
 
-        sstage('Docker Compose') {
+        stage('Docker Compose') {
     steps {
         script {
             sh 'docker-compose down -v || true'
