@@ -13,7 +13,7 @@ pipeline {
             steps {
                 git branch: 'GABSI_WAEL_5sae7_GP9',
                     url: 'https://github.com/Hbibi-iheb/GABSI_WAEL_5sae7_GP9.git',
-                     credentialsId: 'Wael_TOKEN'
+                     credentialsId: 'github-pat'
                    
             }
         }
